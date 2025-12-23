@@ -756,6 +756,17 @@ public class Resultado<T>
             . SiExito(valor => Console.WriteLine($"Resultado: {valor}"))
             .SiError(error => Console.WriteLine($"Error: {error}"));
         // Salida: Error:  No se puede dividir por cero
+
+// Funciones locales
+    Resultado<int> Dividir(int numerador, int denominador)
+    {
+        if (denominador == 0)
+        {
+            return Resultado<int>.CrearError("No se puede dividir por cero");
+        }
+        
+        return Resultado<int>.CrearExito(numerador / denominador);
+    }
 ```
 
 **Ejemplo 2: Nodo de Lista Enlazada**
@@ -3630,6 +3641,20 @@ En C#, las funciones son ciudadanos de primera clase gracias a los **delegates**
         // Componer funciones
         int resultado = sumarDiez(duplicar(5)); // (5 * 2) + 10 = 20
         Console.WriteLine($"Duplicar y luego sumar 10 a 5: {resultado}");
+
+// Funciones locales
+    // Función que DEVUELVE otra función
+    Func<int, int> CrearMultiplicador(int factor)
+    {
+        // Devuelve una función que multiplica por el factor
+        return (numero) => numero * factor;
+    }
+
+    Func<int, int> CrearSumador(int incremento)
+    {
+        // Devuelve una función que suma el incremento
+        return (numero) => numero + incremento;
+    }
 ```
 
 **Almacenar funciones en estructuras de datos:**
@@ -5151,6 +5176,16 @@ class Contador
         
         // Los contadores son independientes
         Console.WriteLine($"Contador 1: {contador1()}"); // 4
+
+// Funciones locales
+    Func<int> CrearContador()
+    {
+        int cuenta = 0; // Variable local
+        
+        // La lambda captura 'cuenta'
+        // La variable 'cuenta' sobrevive mientras exista la lambda
+        return () => ++cuenta;
+    }
 ```
 
 **Precauciones y buenas prácticas:**
@@ -5227,6 +5262,34 @@ class Contador
         
         Console.WriteLine($"Acumulador 2: {acumulador2(10)}");  // 110
         Console.WriteLine($"Acumulador 2: {acumulador2(5)}");   // 115
+
+// Funciones locales
+    // Factory que crea funciones de validación
+    Func<int, bool> CrearValidadorRango(int minimo, int maximo)
+    {
+        // Las variables 'minimo' y 'maximo' son capturadas
+        return valor => valor >= minimo && valor <= maximo;
+    }
+
+    
+    // Factory que crea funciones de transformación
+    Func<string, string> CrearFormateador(string prefijo, string sufijo)
+    {
+        // Captura 'prefijo' y 'sufijo'
+        return texto => $"{prefijo}{texto}{sufijo}";
+    }
+
+    
+    // Factory que crea acumuladores
+    Func<int, int> CrearAcumulador(int valorInicial)
+    {
+        int acumulado = valorInicial; // Capturada y mutable
+        return incremento =>
+        {
+            acumulado += incremento;
+            return acumulado;
+        };
+    }
 ```
 
 ---
@@ -5503,6 +5566,28 @@ Una función de orden superior acepta una o más funciones como parámetros, lo 
         
         // O en una línea
         Console.WriteLine($"3 + 4 = {SumarCurried()(3)(4)}"); // 7
+
+// Funciones locales
+    // Devuelve una función que "recuerda" el primer parámetro
+    Func<int, int> CrearSumador(int valor)
+    {
+        return x => x + valor;
+    }
+
+    
+    // Devuelve una función que "recuerda" el multiplicador
+    Func<int, int> CrearMultiplicador(int factor)
+    {
+        return x => x * factor;
+    }
+
+    
+    // Currying: convertir una función de múltiples parámetros
+    // en una cadena de funciones de un parámetro
+    Func<int, Func<int, int>> SumarCurried()
+    {
+        return a => b => a + b;
+    }
 ```
 
 **Factory de funciones:**
@@ -5538,6 +5623,20 @@ Una función de orden superior acepta una o más funciones como parámetros, lo 
                 Console.WriteLine($"{n} es par y mayor que 10");
             }
         }
+
+// Funciones locales
+    // Factory que crea validadores
+    Func<int, bool> CrearValidadorRango(int min, int max)
+    {
+        return valor => valor >= min && valor <= max;
+    }
+
+    
+    // Factory que crea formateadores
+    Func<double, string> CrearFormateadorNumero(int decimales, string sufijo)
+    {
+        return numero => $"{numero. ToString($"F{decimales}")}{sufijo}";
+    }
 ```
 
 **Composición de funciones:**
@@ -9350,6 +9449,21 @@ using System.Diagnostics;
             Console. WriteLine($"Ordenar {tamaño: N0} elementos: {sw. ElapsedMilliseconds}ms");
         }
 
+// Funciones locales
+    int[] GenerarArrayAleatorio(int tamaño)
+    {
+        Random random = new Random();
+        int[] array = new int[tamaño];
+        
+        for (int i = 0; i < tamaño; i++)
+        {
+            array[i] = random.Next(1, 1000000);
+        }
+        
+        return array;
+    }
+
+
 // Salida típica:
 // Ordenar 1,000 elementos: 0ms
 // Ordenar 10,000 elementos: 2ms
@@ -11403,6 +11517,43 @@ class ConfiguracionApp
         BuscarPalabra(indice, "Java");
 
 // Funciones locales
+    Dictionary<string, List<int>> CrearIndiceInvertido(Dictionary<int, string> documentos)
+    {
+        Dictionary<string, List<int>> indice = new Dictionary<string, List<int>>();
+        
+        foreach (var doc in documentos)
+        {
+            int idDocumento = doc.Key;
+            string[] palabras = doc.Value.ToLower().Split(' ');
+            
+            foreach (string palabra in palabras)
+            {
+                // Limpiar palabra (quitar puntuación)
+                string palabraLimpia = new string(palabra.Where(char.IsLetterOrDigit).ToArray());
+                
+                if (string.IsNullOrEmpty(palabraLimpia))
+                {
+                    continue;
+                }
+                
+                // Agregar documento al índice de esta palabra
+                if (indice.ContainsKey(palabraLimpia))
+                {
+                    if (!indice[palabraLimpia].Contains(idDocumento))
+                    {
+                        indice[palabraLimpia]. Add(idDocumento);
+                    }
+                }
+                else
+                {
+                    indice[palabraLimpia] = new List<int> { idDocumento };
+                }
+            }
+        }
+        
+        return indice;
+    }
+
     void BuscarPalabra(Dictionary<string, List<int>> indice, string palabra)
     {
         string palabraBuscar = palabra.ToLower();
