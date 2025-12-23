@@ -734,6 +734,16 @@ resultadoError
     . SiExito(valor => Console.WriteLine($"Resultado: {valor}"))
     .SiError(error => Console.WriteLine($"Error: {error}"));
 // Salida: Error:  No se puede dividir por cero
+
+Resultado<int> Dividir(int numerador, int denominador)
+{
+    if (denominador == 0)
+    {
+        return Resultado<int>.CrearError("No se puede dividir por cero");
+    }
+
+    return Resultado<int>.CrearExito(numerador / denominador);
+}
 ```
 
 **Ejemplo 2: Nodo de Lista Enlazada**
@@ -2587,60 +2597,53 @@ vetGatos.RevisarTodos();
 Restringe el tipo genérico a tipos que implementen una interfaz específica.
 
 ```csharp
-// Interfaz de ejemplo
 public interface IIdentificable
 {
     int Id { get; set; }
     string ObtenerIdentificador();
 }
-
 public interface IDescriptible
 {
     string Descripcion { get; set; }
     string ObtenerDescripcionCompleta();
 }
-
-// Clases que implementan las interfaces
 public class Producto : IIdentificable, IDescriptible
 {
     public int Id { get; set; }
     public string Nombre { get; set; }
     public string Descripcion { get; set; }
     public decimal Precio { get; set; }
-    
+
     public string ObtenerIdentificador()
     {
         return $"PROD-{Id: D6}";
     }
-    
+
     public string ObtenerDescripcionCompleta()
     {
         return $"{Nombre}:  {Descripcion} (${Precio})";
     }
 }
-
 public class Cliente : IIdentificable
 {
     public int Id { get; set; }
     public string Nombre { get; set; }
     public string Email { get; set; }
-    
+
     public string ObtenerIdentificador()
     {
         return $"CLI-{Id: D6}";
     }
 }
-
-// Repositorio genérico que requiere IIdentificable
 public class Repositorio<T> where T :  IIdentificable
 {
     private List<T> items = new List<T>();
-    
+
     public void Agregar(T item)
     {
         items. Add(item);
     }
-    
+
     // Podemos usar métodos de IIdentificable
     Continúo desde donde se cortó:
 
@@ -2657,7 +2660,7 @@ public class Repositorio<T> where T :  IIdentificable
         }
         return default(T);
     }
-    
+
     public void MostrarTodos()
     {
         Console.WriteLine($"\n=== Repositorio con {items.Count} elementos ===");
@@ -2668,37 +2671,31 @@ public class Repositorio<T> where T :  IIdentificable
     }
 }
 
-class Program
-{
-    static void Main()
-    {
-        // ✓ Funciona:  Producto implementa IIdentificable
-        Repositorio<Producto> repoProductos = new Repositorio<Producto>();
-        repoProductos.Agregar(new Producto 
-        { 
-            Id = 1, 
-            Nombre = "Laptop", 
-            Descripcion = "Portátil gaming",
-            Precio = 1200 
-        });
-        repoProductos.Agregar(new Producto 
-        { 
-            Id = 2, 
-            Nombre = "Mouse", 
-            Descripcion = "Inalámbrico",
-            Precio = 25 
-        });
-        repoProductos.MostrarTodos();
-        
-        // ✓ Funciona: Cliente implementa IIdentificable
-        Repositorio<Cliente> repoClientes = new Repositorio<Cliente>();
-        repoClientes.Agregar(new Cliente { Id = 100, Nombre = "Ana García" });
-        repoClientes.MostrarTodos();
-        
-        // ✗ NO funciona: string no implementa IIdentificable
-        // Repositorio<string> repoStrings = new Repositorio<string>(); // ERROR
-    }
-}
+// ✓ Funciona:  Producto implementa IIdentificable
+Repositorio<Producto> repoProductos = new Repositorio<Producto>();
+repoProductos.Agregar(new Producto 
+{ 
+    Id = 1, 
+    Nombre = "Laptop", 
+    Descripcion = "Portátil gaming",
+    Precio = 1200 
+});
+repoProductos.Agregar(new Producto 
+{ 
+    Id = 2, 
+    Nombre = "Mouse", 
+    Descripcion = "Inalámbrico",
+    Precio = 25 
+});
+repoProductos.MostrarTodos();
+
+// ✓ Funciona: Cliente implementa IIdentificable
+Repositorio<Cliente> repoClientes = new Repositorio<Cliente>();
+repoClientes.Agregar(new Cliente { Id = 100, Nombre = "Ana García" });
+repoClientes.MostrarTodos();
+
+// ✗ NO funciona: string no implementa IIdentificable
+// Repositorio<string> repoStrings = new Repositorio<string>(); // ERROR
 ```
 
 **`where T : notnull` (C# 8+)**
@@ -8626,6 +8623,19 @@ foreach (int tamaño in tamaños)
 
     Console. WriteLine($"Ordenar {tamaño: N0} elementos: {sw. ElapsedMilliseconds}ms");
 }
+
+int[] GenerarArrayAleatorio(int tamaño)
+{
+    Random random = new Random();
+    int[] array = new int[tamaño];
+
+    for (int i = 0; i < tamaño; i++)
+    {
+        array[i] = random.Next(1, 1000000);
+    }
+
+    return array;
+}
 ```
 
 **Consideraciones de rendimiento:**
@@ -11245,101 +11255,40 @@ string[] expresiones =
 
 Console.WriteLine("=== Verificación de Paréntesis Balanceados ===\n");
 
-foreach (string expresion in expresiones)
+SortedSet<int> numeros = new SortedSet<int>();
+
+// Agregar elementos (se mantienen ordenados automáticamente)
+numeros.Add(5);
+numeros.Add(2);
+numeros.Add(8);
+numeros.Add(1);
+numeros.Add(9);
+numeros.Add(3);
+
+Console.WriteLine("Elementos (ordenados automáticamente):");
+foreach (int n in numeros)
 {
-    bool balanceado = VerificarBalance(expresion);
-    string resultado = balanceado ? "✓ Balanceado" :  "✗ No balanceado";
-    Console. WriteLine($"{expresion,-20} {resultado}");
+    Console.Write($"{n} ");
 }
+Console.WriteLine();
 
-bool VerificarBalance(string expresion)
+// Min y Max
+int minimo = numeros.Min;
+int maximo = numeros.Max;
+Console.WriteLine($"\nMínimo: {minimo}");
+Console.WriteLine($"Máximo: {maximo}");
+
+// GetViewBetween:  obtener subconjunto
+SortedSet<int> rango = numeros.GetViewBetween(3, 8);
+Console.WriteLine($"\nRango [3, 8]: [{string.Join(", ", rango)}]");
+
+// Reverse: iterar en orden inverso
+Console.WriteLine("\nOrden inverso:");
+foreach (int n in numeros.Reverse())
 {
-    Stack<char> pila = new Stack<char>();
-
-    foreach (char c in expresion)
-    {
-        // Si es apertura, apilar
-        if (c == '(' || c == '[' || c == '{')
-        {
-            pila.Push(c);
-        }
-        // Si es cierre, verificar
-        else if (c == ')' || c == ']' || c == '}')
-        {
-            if (pila. Count == 0)
-            {
-                return false; // Cierre sin apertura
-            }
-
-            char apertura = pila.Pop();
-
-            // Verificar que coincidan
-            if ((c == ')' && apertura != '(') ||
-                (c == ']' && apertura != '[') ||
-                (c == '}' && apertura != '{'))
-            {
-                return false; // No coinciden
-            }
-        }
-    }
-
-    // Debe quedar vacía (todos los abiertos tienen su cierre)
-    return pila.Count == 0;
+    Console.Write($"{n} ");
 }
-```csharp
-class Program
-{
-    static void Main()
-    {
-        SortedSet<int> numeros = new SortedSet<int>();
-        
-        // Agregar elementos (se mantienen ordenados automáticamente)
-        numeros.Add(5);
-        numeros.Add(2);
-        numeros.Add(8);
-        numeros.Add(1);
-        numeros.Add(9);
-        numeros.Add(3);
-        
-        Console.WriteLine("Elementos (ordenados automáticamente):");
-        foreach (int n in numeros)
-        {
-            Console.Write($"{n} ");
-        }
-        Console.WriteLine();
-        
-        // Min y Max
-        int minimo = numeros.Min;
-        int maximo = numeros.Max;
-        Console.WriteLine($"\nMínimo: {minimo}");
-        Console.WriteLine($"Máximo: {maximo}");
-        
-        // GetViewBetween:  obtener subconjunto
-        SortedSet<int> rango = numeros.GetViewBetween(3, 8);
-        Console.WriteLine($"\nRango [3, 8]: [{string.Join(", ", rango)}]");
-        
-        // Reverse: iterar en orden inverso
-        Console.WriteLine("\nOrden inverso:");
-        foreach (int n in numeros.Reverse())
-        {
-            Console.Write($"{n} ");
-        }
-        Console.WriteLine();
-    }
-}
-```
-
-#### 5.7.3. Con Comparador Personalizado
-
-```csharp
-public class Persona
-{
-    public string Nombre { get; set; }
-    public int Edad { get; set; }
-
-    public override string ToString()
-    {
-        return $"{Nombre} ({Edad})";
+Console.WriteLine();
     }
 }
 
@@ -12937,30 +12886,24 @@ Console. WriteLine("=== Fecha Larga ===");
 Console.WriteLine($"España: {fecha.ToString("D", es)}");
 Console.WriteLine($"USA:     {fecha.ToString("D", en)}");
 Console.WriteLine($"Japón:  {fecha.ToString("D", ja)}");
-
-Console.WriteLine("\n=== Fecha Corta ===");
-Console.WriteLine($"España: {fecha.ToString("d", es)}");
-Console.WriteLine($"USA:    {fecha.ToString("d", en)}");
-Console.WriteLine($"Japón:  {fecha.ToString("d", ja)}");
-
-Console.WriteLine("\n=== Hora ===");
-Console.WriteLine($"España: {fecha.ToString("T", es)}");
-Console.WriteLine($"USA:    {fecha.ToString("T", en)}");
-```
-
-### 6.5. Métodos de Extensión para Formateo
-
-```csharp
 using System.Globalization;
 
-public static class ExtensionesFormateo
-{
-    public static string ToLocalDate(this DateTime fecha)
-    {
-        return fecha. ToString("d", CultureInfo. CurrentCulture);
-    }
+// Cultura actual del sistema
+CultureInfo culturaActual = CultureInfo. CurrentCulture;
+Console.WriteLine($"Cultura actual: {culturaActual.Name}");
+Console.WriteLine($"Nombre en inglés: {culturaActual. EnglishName}");
+Console.WriteLine($"Nombre nativo: {culturaActual. NativeName}");
 
-    public static string ToLocalMoney(this decimal cantidad)
+// Crear culturas específicas
+CultureInfo culturaEspañola = new CultureInfo("es-ES"); // España
+CultureInfo culturaMexicana = new CultureInfo("es-MX"); // México
+CultureInfo culturaUSA = new CultureInfo("en-US"); // Estados Unidos
+CultureInfo culturaFrancia = new CultureInfo("fr-FR"); // Francia
+
+Console.WriteLine($"\nEspaña: {culturaEspañola.DisplayName}");
+Console.WriteLine($"México: {culturaMexicana. DisplayName}");
+Console.WriteLine($"USA: {culturaUSA.DisplayName}");
+Console.WriteLine($"Francia: {culturaFrancia. DisplayName}");
     {
         return cantidad.ToString("C", CultureInfo.CurrentCulture);
     }
