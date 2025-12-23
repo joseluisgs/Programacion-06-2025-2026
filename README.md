@@ -12814,28 +12814,22 @@ La **localización** y el **formateo** permiten que las aplicaciones se adapten 
 ```csharp
 using System.Globalization;
 
-class Program
-{
-    static void Main()
-    {
-        // Cultura actual del sistema
-        CultureInfo culturaActual = CultureInfo. CurrentCulture;
-        Console.WriteLine($"Cultura actual: {culturaActual.Name}");
-        Console.WriteLine($"Nombre en inglés: {culturaActual. EnglishName}");
-        Console.WriteLine($"Nombre nativo: {culturaActual. NativeName}");
-        
-        // Crear culturas específicas
-        CultureInfo culturaEspañola = new CultureInfo("es-ES"); // España
-        CultureInfo culturaMexicana = new CultureInfo("es-MX"); // México
-        CultureInfo culturaUSA = new CultureInfo("en-US"); // Estados Unidos
-        CultureInfo culturaFrancia = new CultureInfo("fr-FR"); // Francia
-        
-        Console.WriteLine($"\nEspaña: {culturaEspañola.DisplayName}");
-        Console.WriteLine($"México: {culturaMexicana. DisplayName}");
-        Console.WriteLine($"USA: {culturaUSA.DisplayName}");
-        Console.WriteLine($"Francia: {culturaFrancia. DisplayName}");
-    }
-}
+// Cultura actual del sistema
+CultureInfo culturaActual = CultureInfo. CurrentCulture;
+Console.WriteLine($"Cultura actual: {culturaActual.Name}");
+Console.WriteLine($"Nombre en inglés: {culturaActual. EnglishName}");
+Console.WriteLine($"Nombre nativo: {culturaActual. NativeName}");
+
+// Crear culturas específicas
+CultureInfo culturaEspañola = new CultureInfo("es-ES"); // España
+CultureInfo culturaMexicana = new CultureInfo("es-MX"); // México
+CultureInfo culturaUSA = new CultureInfo("en-US"); // Estados Unidos
+CultureInfo culturaFrancia = new CultureInfo("fr-FR"); // Francia
+
+Console.WriteLine($"\nEspaña: {culturaEspañola.DisplayName}");
+Console.WriteLine($"México: {culturaMexicana. DisplayName}");
+Console.WriteLine($"USA: {culturaUSA.DisplayName}");
+Console.WriteLine($"Francia: {culturaFrancia. DisplayName}");
 ```
 
 ### 6.3. Formateo de Números
