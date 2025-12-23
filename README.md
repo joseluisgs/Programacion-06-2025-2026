@@ -615,10 +615,21 @@ public class Caja<T>
 Uso de la clase genérica:
 
 ```csharp
+public class Persona
+{
+    public string Nombre { get; set; }
+    public int Edad { get; set; }
+
+    public override string ToString()
+    {
+        return $"Persona: {Nombre} ({Edad} años)";
+    }
+}
+
 // Caja de enteros
 Caja<int> cajaNumero = new Caja<int>(42);
 cajaNumero.MostrarInfo();
-// Salida:
+// Salida: 
 // La caja contiene:  42
 // Tipo del contenido: Int32
 
@@ -646,7 +657,7 @@ Console.WriteLine();
 Persona persona = new Persona { Nombre = "Ana", Edad = 25 };
 Caja<Persona> cajaPersona = new Caja<Persona>(persona);
 cajaPersona.MostrarInfo();
-// Salida:
+// Salida:  
 // La caja contiene:  Persona:  Ana (25 años)
 // Tipo del contenido: Persona
 
@@ -661,6 +672,53 @@ El caso más común es una clase con un solo parámetro de tipo. Veamos más eje
 **Ejemplo 1: Resultado de Operación (Result Pattern)**
 
 ```csharp
+public class Resultado<T>
+{
+    public bool Exito { get; private set; }
+    public T Valor { get; private set; }
+    public string MensajeError { get; private set; }
+
+    // Constructor privado
+    private Resultado(bool exito, T valor, string mensajeError)
+    {
+        Exito = exito;
+        Valor = valor;
+        MensajeError = mensajeError;
+    }
+
+    // Método estático para crear un resultado exitoso
+    public static Resultado<T> CrearExito(T valor)
+    {
+        return new Resultado<T>(true, valor, null);
+    }
+
+    // Método estático para crear un resultado fallido
+    public static Resultado<T> CrearError(string mensajeError)
+    {
+        return new Resultado<T>(false, default(T), mensajeError);
+    }
+
+    // Método para ejecutar una acción solo si el resultado fue exitoso
+    public Resultado<T> SiExito(Action<T> accion)
+    {
+        if (Exito)
+        {
+            accion(Valor);
+        }
+        return this;
+    }
+
+    // Método para ejecutar una acción solo si hubo error
+    public Resultado<T> SiError(Action<string> accion)
+    {
+        if (! Exito)
+        {
+            accion(MensajeError);
+        }
+        return this;
+    }
+}
+
 // Operación exitosa
 Resultado<int> resultadoDivision = Dividir(10, 2);
 
@@ -676,21 +734,93 @@ resultadoError
     . SiExito(valor => Console.WriteLine($"Resultado: {valor}"))
     .SiError(error => Console.WriteLine($"Error: {error}"));
 // Salida: Error:  No se puede dividir por cero
-
-Resultado<int> Dividir(int numerador, int denominador)
-{
-    if (denominador == 0)
-    {
-        return Resultado<int>.CrearError("No se puede dividir por cero");
-    }
-
-    return Resultado<int>.CrearExito(numerador / denominador);
-}
 ```
 
 **Ejemplo 2: Nodo de Lista Enlazada**
 
 ```csharp
+public class Nodo<T>
+{
+    public T Dato { get; set; }
+    public Nodo<T> Siguiente { get; set; }
+
+    public Nodo(T dato)
+    {
+        Dato = dato;
+        Siguiente = null;
+    }
+
+    public override string ToString()
+    {
+        return $"Nodo({Dato})";
+    }
+}
+public class ListaEnlazada<T>
+{
+    private Nodo<T> cabeza;
+    private int contador;
+
+    public int Cantidad => contador;
+
+    // Agregar al inicio
+    public void AgregarAlInicio(T dato)
+    {
+        Nodo<T> nuevoNodo = new Nodo<T>(dato);
+        nuevoNodo.Siguiente = cabeza;
+        cabeza = nuevoNodo;
+        contador++;
+    }
+
+    // Agregar al final
+    public void AgregarAlFinal(T dato)
+    {
+        Nodo<T> nuevoNodo = new Nodo<T>(dato);
+
+        if (cabeza == null)
+        {
+            cabeza = nuevoNodo;
+        }
+        else
+        {
+            Nodo<T> actual = cabeza;
+            while (actual.Siguiente != null)
+            {
+                actual = actual. Siguiente;
+            }
+            actual.Siguiente = nuevoNodo;
+        }
+        contador++;
+    }
+
+    // Mostrar todos los elementos
+    public void Mostrar()
+    {
+        Nodo<T> actual = cabeza;
+        Console.Write("Lista:  ");
+        while (actual != null)
+        {
+            Console. Write($"{actual.Dato} -> ");
+            actual = actual. Siguiente;
+        }
+        Console.WriteLine("null");
+    }
+
+    // Buscar un elemento
+    public bool Contiene(T dato)
+    {
+        Nodo<T> actual = cabeza;
+        while (actual != null)
+        {
+            if (actual.Dato. Equals(dato))
+            {
+                return true;
+            }
+            actual = actual.Siguiente;
+        }
+        return false;
+    }
+}
+
 // Lista de enteros
 ListaEnlazada<int> listaNumeros = new ListaEnlazada<int>();
 listaNumeros.AgregarAlFinal(10);
@@ -727,6 +857,36 @@ public class NombreClase<T1, T2, T3>
 **Ejemplo 1: Par de valores (Tupla de 2 elementos)**
 
 ```csharp
+public class Par<T1, T2>
+{
+    public T1 Primero { get; set; }
+    public T2 Segundo { get; set; }
+
+    public Par(T1 primero, T2 segundo)
+    {
+        Primero = primero;
+        Segundo = segundo;
+    }
+
+    // Deconstructor (permite usar deconstrucción)
+    public void Deconstruct(out T1 primero, out T2 segundo)
+    {
+        primero = Primero;
+        segundo = Segundo;
+    }
+
+    public override string ToString()
+    {
+        return $"({Primero}, {Segundo})";
+    }
+
+    // Método para intercambiar los valores
+    public Par<T2, T1> Intercambiar()
+    {
+        return new Par<T2, T1>(Segundo, Primero);
+    }
+}
+
 // Par de int y string
 Par<int, string> par1 = new Par<int, string>(1, "Uno");
 Console.WriteLine(par1); // (1, Uno)
@@ -762,6 +922,114 @@ foreach (var coord in coordenadas)
 **Ejemplo 2: Diccionario simple (estructura clave-valor)**
 
 ```csharp
+public class Entrada<TKey, TValue>
+{
+    public TKey Clave { get; set; }
+    public TValue Valor { get; set; }
+
+    public Entrada(TKey clave, TValue valor)
+    {
+        Clave = clave;
+        Valor = valor;
+    }
+
+    public override string ToString()
+    {
+        return $"[{Clave}] => {Valor}";
+    }
+}
+public class DiccionarioSimple<TKey, TValue>
+{
+    private Entrada<TKey, TValue>[] entradas;
+    private int contador;
+
+    public int Cantidad => contador;
+
+    public DiccionarioSimple(int capacidadInicial = 10)
+    {
+        entradas = new Entrada<TKey, TValue>[capacidadInicial];
+        contador = 0;
+    }
+
+    // Agregar o actualizar una entrada
+    public void Agregar(TKey clave, TValue valor)
+    {
+        // Buscar si la clave ya existe
+        for (int i = 0; i < contador; i++)
+        {
+            if (entradas[i]. Clave. Equals(clave))
+            {
+                // Actualizar valor existente
+                entradas[i].Valor = valor;
+                return;
+            }
+        }
+
+        // Agregar nueva entrada
+        if (contador == entradas.Length)
+        {
+            // Redimensionar el array
+            Array.Resize(ref entradas, entradas.Length * 2);
+        }
+
+        entradas[contador] = new Entrada<TKey, TValue>(clave, valor);
+        contador++;
+    }
+
+    // Obtener valor por clave
+    public TValue Obtener(TKey clave)
+    {
+        for (int i = 0; i < contador; i++)
+        {
+            if (entradas[i]. Clave.Equals(clave))
+            {
+                return entradas[i].Valor;
+            }
+        }
+
+        throw new KeyNotFoundException($"La clave '{clave}' no existe en el diccionario");
+    }
+
+    // Intentar obtener valor
+    public bool TryGetValue(TKey clave, out TValue valor)
+    {
+        for (int i = 0; i < contador; i++)
+        {
+            if (entradas[i].Clave.Equals(clave))
+            {
+                valor = entradas[i]. Valor;
+                return true;
+            }
+        }
+
+        valor = default(TValue);
+        return false;
+    }
+
+    // Verificar si existe una clave
+    public bool ContieneClave(TKey clave)
+    {
+        for (int i = 0; i < contador; i++)
+        {
+            if (entradas[i].Clave.Equals(clave))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Mostrar todas las entradas
+    public void Mostrar()
+    {
+        Console.WriteLine($"Diccionario ({contador} entradas):");
+        for (int i = 0; i < contador; i++)
+        {
+            Console.WriteLine($"  {entradas[i]}");
+        }
+    }
+}
+
 // Diccionario de string a int (contar palabras)
 DiccionarioSimple<string, int> contadorPalabras = new DiccionarioSimple<string, int>();
 
@@ -780,7 +1048,7 @@ foreach (string palabra in palabras)
 }
 
 contadorPalabras. Mostrar();
-// Salida:
+// Salida: 
 // Diccionario (3 entradas):
 //   [hola] => 3
 //   [mundo] => 2
@@ -804,6 +1072,105 @@ Console.WriteLine($"\nCódigo 404 significa: {codigosEstado. Obtener(404)}");
 Puedes tener clases genéricas dentro de otras clases genéricas, lo que permite estructuras de datos muy flexibles. 
 
 ```csharp
+public class Coleccion<T>
+{
+    private T[] elementos;
+    private int contador;
+
+    public int Cantidad => contador;
+
+    public Coleccion(int capacidadInicial = 10)
+    {
+        elementos = new T[capacidadInicial];
+        contador = 0;
+    }
+
+    public void Agregar(T elemento)
+    {
+        if (contador == elementos.Length)
+        {
+            Array.Resize(ref elementos, elementos.Length * 2);
+        }
+        elementos[contador++] = elemento;
+    }
+
+    public T this[int indice]
+    {
+        get
+        {
+            if (indice < 0 || indice >= contador)
+                throw new IndexOutOfRangeException();
+            return elementos[indice];
+        }
+        set
+        {
+            if (indice < 0 || indice >= contador)
+                throw new IndexOutOfRangeException();
+            elementos[indice] = value;
+        }
+    }
+
+    // Clase interna genérica (anidada)
+    public class Iterador<TElemento>
+    {
+        private TElemento[] elementos;
+        private int posicion;
+        private int limite;
+
+        public Iterador(TElemento[] elementos, int limite)
+        {
+            this. elementos = elementos;
+            this. posicion = 0;
+            this.limite = limite;
+        }
+
+        public bool TieneSiguiente()
+        {
+            return posicion < limite;
+        }
+
+        public TElemento Siguiente()
+        {
+            if (! TieneSiguiente())
+            {
+                throw new InvalidOperationException("No hay más elementos");
+            }
+            return elementos[posicion++];
+        }
+
+        public void Reiniciar()
+        {
+            posicion = 0;
+        }
+    }
+
+    // Método que retorna un iterador
+    public Iterador<T> ObtenerIterador()
+    {
+        return new Iterador<T>(elementos, contador);
+    }
+
+    // Otro ejemplo de clase anidada:  Nodo para una estructura de árbol
+    public class NodoArbol<TValor>
+    {
+        public TValor Valor { get; set; }
+        public NodoArbol<TValor> Izquierdo { get; set; }
+        public NodoArbol<TValor> Derecho { get; set; }
+
+        public NodoArbol(TValor valor)
+        {
+            Valor = valor;
+            Izquierdo = null;
+            Derecho = null;
+        }
+
+        public bool EsHoja()
+        {
+            return Izquierdo == null && Derecho == null;
+        }
+    }
+}
+
 // Usar la colección y su iterador
 Coleccion<string> nombres = new Coleccion<string>();
 nombres.Agregar("Ana");
@@ -841,15 +1208,6 @@ MostrarArbol(raiz, 0);
 
 Console.WriteLine($"\n¿El nodo raíz es hoja? {raiz.EsHoja()}");
 Console.WriteLine($"¿El nodo 3 es hoja? {raiz.Izquierdo. Izquierdo.EsHoja()}");
-
-void MostrarArbol<T>(Coleccion<T>.NodoArbol<T> nodo, int nivel)
-{
-    if (nodo == null) return;
-
-    MostrarArbol(nodo. Derecho, nivel + 1);
-    Console.WriteLine($"{new string(' ', nivel * 4)}{nodo.Valor}");
-    MostrarArbol(nodo.Izquierdo, nivel + 1);
-}
 ```
 
 Salida:
@@ -895,6 +1253,45 @@ public TipoRetorno NombreMetodo<T>(T parametro)
 **Ejemplo básico:**
 
 ```csharp
+public class UtilidadesGenericas
+{
+    // Método genérico que intercambia dos valores
+    public static void Intercambiar<T>(ref T a, ref T b)
+    {
+        T temp = a;
+        a = b;
+        b = temp;
+    }
+
+    // Método genérico que muestra información de un valor
+    public static void MostrarInfo<T>(T valor)
+    {
+        Console.WriteLine($"Valor: {valor}");
+        Console.WriteLine($"Tipo: {typeof(T).Name}");
+        Console.WriteLine($"Tipo completo: {typeof(T).FullName}");
+    }
+
+    // Método genérico que retorna el primer elemento de un array
+    public static T PrimerElemento<T>(T[] array)
+    {
+        if (array == null || array.Length == 0)
+        {
+            throw new ArgumentException("El array no puede estar vacío");
+        }
+        return array[0];
+    }
+
+    // Método genérico que retorna el último elemento de un array
+    public static T UltimoElemento<T>(T[] array)
+    {
+        if (array == null || array. Length == 0)
+        {
+            throw new ArgumentException("El array no puede estar vacío");
+        }
+        return array[array.Length - 1];
+    }
+}
+
 // Intercambiar enteros
 int num1 = 10;
 int num2 = 20;
@@ -936,6 +1333,27 @@ Console.WriteLine($"Última palabra: {UtilidadesGenericas.UltimoElemento(palabra
 Una de las características más útiles de los métodos genéricos es la **inferencia de tipos**. El compilador puede deducir automáticamente el tipo genérico a partir de los argumentos que pasas al método, sin necesidad de especificarlo explícitamente.
 
 ```csharp
+public class UtilidadesInferencia
+{
+    // Método genérico simple
+    public static void Imprimir<T>(T valor)
+    {
+        Console.WriteLine($"Valor: {valor}, Tipo: {typeof(T).Name}");
+    }
+
+    // Método genérico que retorna un array
+    public static T[] CrearArray<T>(T valor1, T valor2, T valor3)
+    {
+        return new T[] { valor1, valor2, valor3 };
+    }
+
+    // Método genérico que compara dos valores
+    public static bool SonIguales<T>(T a, T b)
+    {
+        return a. Equals(b);
+    }
+}
+
 // Inferencia de tipos:  el compilador deduce que T es int
 UtilidadesInferencia. Imprimir(42);
 // Equivalente explícito: UtilidadesInferencia.Imprimir<int>(42);
@@ -961,6 +1379,22 @@ Console.WriteLine($"'Hola' == 'Mundo': {iguales2}");
 La inferencia de tipos funciona cuando el compilador puede deducir sin ambigüedad el tipo a partir de los argumentos.  Si hay ambigüedad o el método no tiene parámetros del tipo genérico, debes especificar el tipo explícitamente.
 
 ```csharp
+public class EjemplosInferencia
+{
+    // Método sin parámetros del tipo genérico
+    public static T CrearValorPorDefecto<T>()
+    {
+        return default(T);
+    }
+
+    // Método con múltiples tipos genéricos
+    public static void ProcesarPar<T1, T2>(T1 primero, T2 segundo)
+    {
+        Console.WriteLine($"Primero: {primero} (tipo {typeof(T1).Name})");
+        Console.WriteLine($"Segundo: {segundo} (tipo {typeof(T2).Name})");
+    }
+}
+
 // Aquí DEBES especificar el tipo explícitamente porque no hay parámetros
 int valorInt = EjemplosInferencia.CrearValorPorDefecto<int>();
 string valorString = EjemplosInferencia.CrearValorPorDefecto<string>();
@@ -981,6 +1415,47 @@ EjemplosInferencia.ProcesarPar(3.14, true);
 Un método genérico puede existir en una clase no genérica.  Esto es muy útil cuando solo necesitas que un método específico sea genérico, no toda la clase.
 
 ```csharp
+public class Utilidades
+{
+    // Método genérico que convierte a array
+    public T[] ConvertirAArray<T>(T elemento, int cantidad)
+    {
+        T[] array = new T[cantidad];
+        for (int i = 0; i < cantidad; i++)
+        {
+            array[i] = elemento;
+        }
+        return array;
+    }
+
+    // Método genérico que busca un elemento
+    public int BuscarIndice<T>(T[] array, T elementoBuscado)
+    {
+        for (int i = 0; i < array.Length; i++)
+        {
+            if (array[i]. Equals(elementoBuscado))
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // Método genérico que cuenta ocurrencias
+    public int ContarOcurrencias<T>(T[] array, T elementoBuscado)
+    {
+        int contador = 0;
+        for (int i = 0; i < array.Length; i++)
+        {
+            if (array[i].Equals(elementoBuscado))
+            {
+                contador++;
+            }
+        }
+        return contador;
+    }
+}
+
 Utilidades util = new Utilidades();
 
 // Crear array de elementos repetidos
@@ -1013,6 +1488,88 @@ Console.WriteLine($"La palabra 'dos' aparece {ocurrencias} veces");
 Los métodos genéricos pueden ser estáticos, lo cual es muy común para métodos de utilidad que no necesitan estado de instancia.
 
 ```csharp
+public class OperacionesArray
+{
+    // Método estático genérico que invierte un array
+    public static void Invertir<T>(T[] array)
+    {
+        int izquierda = 0;
+        int derecha = array.Length - 1;
+
+        while (izquierda < derecha)
+        {
+            T temp = array[izquierda];
+            array[izquierda] = array[derecha];
+            array[derecha] = temp;
+
+            izquierda++;
+            derecha--;
+        }
+    }
+
+    // Método estático genérico que copia un array
+    public static T[] Copiar<T>(T[] original)
+    {
+        T[] copia = new T[original.Length];
+        for (int i = 0; i < original.Length; i++)
+        {
+            copia[i] = original[i];
+        }
+        return copia;
+    }
+
+    // Método estático genérico que combina dos arrays
+    public static T[] Concatenar<T>(T[] array1, T[] array2)
+    {
+        T[] resultado = new T[array1.Length + array2.Length];
+
+        // Copiar primer array
+        for (int i = 0; i < array1.Length; i++)
+        {
+            resultado[i] = array1[i];
+        }
+
+        // Copiar segundo array
+        for (int i = 0; i < array2.Length; i++)
+        {
+            resultado[array1.Length + i] = array2[i];
+        }
+
+        return resultado;
+    }
+
+    // Método estático genérico que obtiene una subsección
+    public static T[] ObtenerSubArray<T>(T[] array, int inicio, int longitud)
+    {
+        if (inicio < 0 || inicio >= array.Length)
+        {
+            throw new ArgumentOutOfRangeException(nameof(inicio));
+        }
+
+        if (inicio + longitud > array.Length)
+        {
+            throw new ArgumentException("La longitud excede los límites del array");
+        }
+
+        T[] subArray = new T[longitud];
+        for (int i = 0; i < longitud; i++)
+        {
+            subArray[i] = array[inicio + i];
+        }
+
+        return subArray;
+    }
+
+    // Método estático genérico que llena un array con un valor
+    public static void Llenar<T>(T[] array, T valor)
+    {
+        for (int i = 0; i < array.Length; i++)
+        {
+            array[i] = valor;
+        }
+    }
+}
+
 // Invertir array de enteros
 int[] numeros = { 1, 2, 3, 4, 5 };
 Console.WriteLine($"Original: [{string.Join(", ", numeros)}]");
@@ -1055,6 +1612,79 @@ Console.WriteLine($"Array llenado con 99: [{string.Join(", ", arrayVacio)}]");
 Vamos a implementar operaciones útiles que funcionan con arrays de cualquier tipo:
 
 ```csharp
+public class OperacionesAvanzadas
+{
+    // Verificar si todos los elementos cumplen una condición
+    public static bool TodosCumplen<T>(T[] array, Func<T, bool> predicado)
+    {
+        foreach (T elemento in array)
+        {
+            if (!predicado(elemento))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Verificar si algún elemento cumple una condición
+    public static bool AlgunoCumple<T>(T[] array, Func<T, bool> predicado)
+    {
+        foreach (T elemento in array)
+        {
+            if (predicado(elemento))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Encontrar el primer elemento que cumple una condición
+    public static T EncontrarPrimero<T>(T[] array, Func<T, bool> predicado)
+    {
+        foreach (T elemento in array)
+        {
+            if (predicado(elemento))
+            {
+                return elemento;
+            }
+        }
+
+        throw new InvalidOperationException("Ningún elemento cumple la condición");
+    }
+
+    // Intentar encontrar el primer elemento que cumple una condición
+    public static bool TryEncontrarPrimero<T>(T[] array, Func<T, bool> predicado, out T resultado)
+    {
+        foreach (T elemento in array)
+        {
+            if (predicado(elemento))
+            {
+                resultado = elemento;
+                return true;
+            }
+        }
+
+        resultado = default(T);
+        return false;
+    }
+
+    // Contar elementos que cumplen una condición
+    public static int ContarSi<T>(T[] array, Func<T, bool> predicado)
+    {
+        int contador = 0;
+        foreach (T elemento in array)
+        {
+            if (predicado(elemento))
+            {
+                contador++;
+            }
+        }
+        return contador;
+    }
+}
+
 int[] numeros = { 45, 12, 89, 23, 67, 34 };
 
 // Verificar condiciones
@@ -1160,6 +1790,16 @@ La varianza es fundamental para:
 Por defecto, los tipos genéricos en C# son **invariantes**. Esto significa que no existe relación de conversión entre tipos genéricos aunque sus parámetros de tipo estén relacionados.
 
 ```csharp
+public class Caja<T>
+{
+    public T Contenido { get; set; }
+
+    public Caja(T contenido)
+    {
+        Contenido = contenido;
+    }
+}
+
 // Esto funciona:  Perro es subtipo de Animal
 Animal animal = new Perro();
 animal.HacerSonido();
@@ -1185,6 +1825,29 @@ Perro perro = cajaPerro.Contenido;   // ¡ERROR en tiempo de ejecución!
 **Limitaciones con tipos genéricos invariantes**
 
 ```csharp
+public class ContenedorInvariante<T>
+{
+    private T[] elementos;
+    private int contador;
+
+    public ContenedorInvariante(int capacidad)
+    {
+        elementos = new T[capacidad];
+        contador = 0;
+    }
+
+    // Podemos tanto leer como escribir
+    public void Agregar(T elemento)
+    {
+        elementos[contador++] = elemento;
+    }
+
+    public T Obtener(int indice)
+    {
+        return elementos[indice];
+    }
+}
+
 ContenedorInvariante<Perro> contenedorPerros = new ContenedorInvariante<Perro>(10);
 contenedorPerros.Agregar(new Perro { Nombre = "Firulais" });
 contenedorPerros.Agregar(new Perro { Nombre = "Rex" });
@@ -1216,6 +1879,40 @@ Se declara usando la palabra clave `out` en la definición del parámetro de tip
 - Solo funciona con tipos de referencia (interfaces y delegates)
 
 ```csharp
+public interface IProductor<out T>
+{
+    T Producir();           // ✓ Permitido:  devuelve T
+    // void Consumir(T item);  // ✗ NO permitido: acepta T como parámetro
+}
+public class ProductorAnimal : IProductor<Animal>
+{
+    public Animal Producir()
+    {
+        return new Animal { Nombre = "Animal genérico" };
+    }
+}
+public class ProductorPerro : IProductor<Perro>
+{
+    public Perro Producir()
+    {
+        return new Perro { Nombre = "Firulais" };
+    }
+}
+public class Gato : Animal
+{
+    public override void HacerSonido()
+    {
+        Console. WriteLine("Miau miau");
+    }
+}
+public class ProductorGato : IProductor<Gato>
+{
+    public Gato Producir()
+    {
+        return new Gato { Nombre = "Michi" };
+    }
+}
+
 // Gracias a la covarianza, esto funciona
 IProductor<Perro> productorPerro = new ProductorPerro();
 IProductor<Animal> productorAnimal = productorPerro; // ✓ Conversión válida
@@ -1230,6 +1927,42 @@ ProcesarProductor(productorGato); // ✓ También funciona
 **Ejemplo práctico: Repositorio de solo lectura**
 
 ```csharp
+public interface IRepositorioLectura<out T>
+{
+    T ObtenerPorId(int id);
+    T[] ObtenerTodos();
+    int Contar();
+}
+public class RepositorioPerros : IRepositorioLectura<Perro>
+{
+    private Perro[] perros;
+
+    public RepositorioPerros()
+    {
+        perros = new Perro[]
+        {
+            new Perro { Nombre = "Firulais" },
+            new Perro { Nombre = "Rex" },
+            new Perro { Nombre = "Buddy" }
+        };
+    }
+
+    public Perro ObtenerPorId(int id)
+    {
+        return perros[id];
+    }
+
+    public Perro[] ObtenerTodos()
+    {
+        return perros;
+    }
+
+    public int Contar()
+    {
+        return perros.Length;
+    }
+}
+
 IRepositorioLectura<Perro> repoPerros = new RepositorioPerros();
 
 // Gracias a la covarianza, podemos usar un repositorio de Perros
@@ -1264,6 +1997,46 @@ public interface ICovariante<out T>
 **Ejemplos prácticos con jerarquías de clases**
 
 ```csharp
+public class Animal
+{
+    public string Nombre { get; set; }
+    public virtual void HacerSonido() => Console.WriteLine("Sonido genérico");
+}
+public class Mamifero : Animal
+{
+    public override void HacerSonido() => Console.WriteLine("Sonido de mamífero");
+}
+public class Perro : Mamifero
+{
+    public override void HacerSonido() => Console.WriteLine("Guau guau");
+}
+public class Chihuahua : Perro
+{
+    public override void HacerSonido() => Console.WriteLine("Yip yip");
+}
+public interface IFabrica<out T> where T : Animal
+{
+    T Crear(string nombre);
+    T[] CrearMultiples(int cantidad);
+}
+public class FabricaChihuahuas : IFabrica<Chihuahua>
+{
+    public Chihuahua Crear(string nombre)
+    {
+        return new Chihuahua { Nombre = nombre };
+    }
+
+    public Chihuahua[] CrearMultiples(int cantidad)
+    {
+        Chihuahua[] chihuahuas = new Chihuahua[cantidad];
+        for (int i = 0; i < cantidad; i++)
+        {
+            chihuahuas[i] = new Chihuahua { Nombre = $"Chihuahua-{i + 1}" };
+        }
+        return chihuahuas;
+    }
+}
+
 IFabrica<Chihuahua> fabricaChihuahuas = new FabricaChihuahuas();
 
 // Gracias a la covarianza, podemos usar la fábrica de Chihuahuas
@@ -1285,6 +2058,28 @@ Se declara usando la palabra clave `in` en la definición del parámetro de tipo
 - Solo funciona con tipos de referencia (interfaces y delegates)
 
 ```csharp
+public interface IConsumidor<in T>
+{
+    void Consumir(T item);      // ✓ Permitido: acepta T como parámetro
+    // T Producir();            // ✗ NO permitido: devuelve T
+}
+public class ConsumidorAnimal :  IConsumidor<Animal>
+{
+    public void Consumir(Animal animal)
+    {
+        Console.WriteLine($"Procesando animal: {animal.Nombre}");
+        animal.HacerSonido();
+    }
+}
+public class ConsumidorPerro : IConsumidor<Perro>
+{
+    public void Consumir(Perro perro)
+    {
+        Console.WriteLine($"Procesando perro: {perro.Nombre}");
+        perro.HacerSonido();
+    }
+}
+
 Perro[] perros = new Perro[]
 {
     new Perro { Nombre = "Firulais" },
@@ -1306,6 +2101,24 @@ Si tienes un `IConsumidor<Animal>`, significa que puede procesar cualquier `Anim
 **Ejemplo práctico: Comparador**
 
 ```csharp
+public interface IComparadorPersonalizado<in T>
+{
+    int Comparar(T x, T y);
+    bool SonIguales(T x, T y);
+}
+public class ComparadorAnimales : IComparadorPersonalizado<Animal>
+{
+    public int Comparar(Animal x, Animal y)
+    {
+        return string.Compare(x.Nombre, y.Nombre, StringComparison. Ordinal);
+    }
+
+    public bool SonIguales(Animal x, Animal y)
+    {
+        return x. Nombre == y.Nombre;
+    }
+}
+
 Perro[] perros = new Perro[]
 {
     new Perro { Nombre = "Rex" },
@@ -1358,6 +2171,49 @@ public interface IContravariante<in T>
 **Ejemplo práctico con jerarquías**
 
 ```csharp
+public interface IValidador<in T>
+{
+    bool EsValido(T item);
+    string ObtenerMensajeError(T item);
+}
+public class ValidadorAnimal : IValidador<Animal>
+{
+    public bool EsValido(Animal animal)
+    {
+        return ! string.IsNullOrWhiteSpace(animal.Nombre) &&
+               animal.Nombre.Length >= 2;
+    }
+
+    public string ObtenerMensajeError(Animal animal)
+    {
+        if (string.IsNullOrWhiteSpace(animal.Nombre))
+            return "El nombre no puede estar vacío";
+        if (animal.Nombre.Length < 2)
+            return "El nombre debe tener al menos 2 caracteres";
+        return "Válido";
+    }
+}
+public class ValidadorPerro : IValidador<Perro>
+{
+    public bool EsValido(Perro perro)
+    {
+        return ! string.IsNullOrWhiteSpace(perro.Nombre) &&
+               perro. Nombre.Length >= 3 &&
+               perro.Nombre. Length <= 20;
+    }
+
+    public string ObtenerMensajeError(Perro perro)
+    {
+        if (string.IsNullOrWhiteSpace(perro.Nombre))
+            return "El nombre del perro no puede estar vacío";
+        if (perro. Nombre.Length < 3)
+            return "El nombre del perro debe tener al menos 3 caracteres";
+        if (perro.Nombre.Length > 20)
+            return "El nombre del perro no puede superar los 20 caracteres";
+        return "Válido";
+    }
+}
+
 Chihuahua[] chihuahuas = new Chihuahua[]
 {
     new Chihuahua { Nombre = "Tiny" },
@@ -1373,7 +2229,7 @@ Console.WriteLine("\n=== Validación con ValidadorPerro ===");
 IValidador<Perro> validadorPerro = new ValidadorPerro();
 ValidarChihuahuas(chihuahuas, validadorPerro); // ✓ Funciona
 
-// Gracias a la contravarianza:
+// Gracias a la contravarianza: 
 // - IValidador<Animal> puede validar Chihuahuas
 // - IValidador<Perro> puede validar Chihuahuas
 // Porque Chihuahua ES UN Perro ES UN Animal
@@ -1465,11 +2321,36 @@ public interface ICorrecto3<in T>
 **Ejemplo integrador de los tres tipos:**
 
 ```csharp
+public class Repositorio<T>
+{
+    private List<T> items = new List<T>();
+
+    public void Agregar(T item) => items.Add(item);
+    public T Obtener(int indice) => items[indice];
+}
+public interface IRepositorioLectura<out T>
+{
+    T Obtener(int indice);
+    IEnumerable<T> ObtenerTodos();
+}
+public interface IRepositorioEscritura<in T>
+{
+    void Agregar(T item);
+    void Actualizar(int indice, T item);
+}
+public interface IRepositorioCompleto<T> :
+    IRepositorioLectura<T>,
+    IRepositorioEscritura<T>
+{
+    // T aparece tanto en entrada como en salida en interfaces separadas
+    // pero la interfaz combinada es invariante
+}
+
 // Repositorio invariante
 Repositorio<Perro> repoPerros = new Repositorio<Perro>();
 repoPerros.Agregar(new Perro { Nombre = "Firulais" });
 
-// Si implementamos las interfaces variantes...
+// Si implementamos las interfaces variantes... 
 // IRepositorioLectura<Perro> lectura = repoPerros;
 // LeerAnimales(lectura); // ✓ Funciona por covarianza
 
@@ -1490,6 +2371,26 @@ Las **restricciones de tipos** (type constraints) permiten especificar requisito
 Restringe el tipo genérico a tipos de referencia (clases, interfaces, delegates, arrays).
 
 ```csharp
+public class ContenedorReferencia<T> where T : class
+{
+    private T item;
+
+    public ContenedorReferencia(T item)
+    {
+        this.item = item;
+    }
+
+    public bool EsNulo()
+    {
+        return item == null; // Esto solo tiene sentido con tipos de referencia
+    }
+
+    public T ObtenerOPorDefecto()
+    {
+        return item ?? default(T); // null para tipos de referencia
+    }
+}
+
 // ✓ Funciona: string es tipo de referencia
 ContenedorReferencia<string> contenedor1 = new ContenedorReferencia<string>("Hola");
 
@@ -1506,6 +2407,29 @@ Console.WriteLine($"¿Es nulo? {contenedor2.EsNulo()}"); // True
 Restringe el tipo genérico a tipos de valor (int, double, bool, enum, struct, etc.). Excluye `Nullable<T>`.
 
 ```csharp
+public class ContenedorValor<T> where T : struct
+{
+    private T valor;
+
+    public ContenedorValor(T valor)
+    {
+        this.valor = valor;
+    }
+
+    public T Valor => valor;
+
+    // Con tipos de valor, podemos hacer operaciones específicas
+    public Nullable<T> ObtenerNullable()
+    {
+        return new Nullable<T>(valor);
+    }
+
+    public int TamañoEnBytes()
+    {
+        return System.Runtime.InteropServices.Marshal.SizeOf(valor);
+    }
+}
+
 // ✓ Funciona: int es tipo de valor
 ContenedorValor<int> contenedor1 = new ContenedorValor<int>(42);
 Console.WriteLine($"Valor: {contenedor1.Valor}");
@@ -1526,6 +2450,58 @@ ContenedorValor<bool> contenedor3 = new ContenedorValor<bool>(true);
 Restringe el tipo genérico a tipos que tengan un constructor público sin parámetros.  Esto te permite crear instancias del tipo genérico. 
 
 ```csharp
+public class Fabrica<T> where T : new()
+{
+    public T Crear()
+    {
+        return new T(); // Esto solo es posible con la restricción new()
+    }
+
+    public T[] CrearMultiples(int cantidad)
+    {
+        T[] array = new T[cantidad];
+        for (int i = 0; i < cantidad; i++)
+        {
+            array[i] = new T();
+        }
+        return array;
+    }
+}
+public class Persona
+{
+    public string Nombre { get; set; }
+    public int Edad { get; set; }
+
+    // Constructor sin parámetros (requerido)
+    public Persona()
+    {
+        Nombre = "Sin nombre";
+        Edad = 0;
+    }
+}
+public class Producto
+{
+    public string Codigo { get; set; }
+    public decimal Precio { get; set; }
+
+    // Constructor sin parámetros
+    public Producto()
+    {
+        Codigo = "N/A";
+        Precio = 0;
+    }
+}
+public class Cliente
+{
+    public string NIF { get; set; }
+
+    // NO tiene constructor sin parámetros
+    public Cliente(string nif)
+    {
+        NIF = nif;
+    }
+}
+
 // ✓ Funciona: Persona tiene constructor sin parámetros
 Fabrica<Persona> fabricaPersonas = new Fabrica<Persona>();
 Persona persona = fabricaPersonas.Crear();
@@ -1545,6 +2521,52 @@ Console.WriteLine($"Productos creados: {productos.Length}");
 Restringe el tipo genérico a una clase específica o sus clases derivadas. 
 
 ```csharp
+public class Perro : Animal
+{
+    public override void HacerSonido()
+    {
+        Console.WriteLine($"{Nombre} dice:  Guau guau");
+    }
+}
+public class Gato : Animal
+{
+    public override void HacerSonido()
+    {
+        Console.WriteLine($"{Nombre} dice: Miau miau");
+    }
+}
+public class Veterinaria<T> where T : Animal
+{
+    private T[] pacientes;
+    private int contador;
+
+    public Veterinaria(int capacidad)
+    {
+        pacientes = new T[capacidad];
+        contador = 0;
+    }
+
+    public void RegistrarPaciente(T paciente)
+    {
+        if (contador < pacientes.Length)
+        {
+            pacientes[contador++] = paciente;
+        }
+    }
+
+    // Podemos usar métodos de Animal porque T :  Animal
+    public void RevisarTodos()
+    {
+        Console.WriteLine($"\n=== Revisión de {contador} pacientes ===");
+        for (int i = 0; i < contador; i++)
+        {
+            Console.WriteLine($"\nPaciente {i + 1}:");
+            pacientes[i].HacerSonido(); // Podemos llamar esto porque es un Animal
+            pacientes[i].Dormir();       // Y esto también
+        }
+    }
+}
+
 // ✓ Funciona:  Perro hereda de Animal
 Veterinaria<Perro> vetPerros = new Veterinaria<Perro>(5);
 vetPerros.RegistrarPaciente(new Perro { Nombre = "Firulais" });
@@ -1565,31 +2587,118 @@ vetGatos.RevisarTodos();
 Restringe el tipo genérico a tipos que implementen una interfaz específica.
 
 ```csharp
-// ✓ Funciona:  Producto implementa IIdentificable
-Repositorio<Producto> repoProductos = new Repositorio<Producto>();
-repoProductos.Agregar(new Producto
+// Interfaz de ejemplo
+public interface IIdentificable
 {
-    Id = 1,
-    Nombre = "Laptop",
-    Descripcion = "Portátil gaming",
-    Precio = 1200
-});
-repoProductos.Agregar(new Producto
+    int Id { get; set; }
+    string ObtenerIdentificador();
+}
+
+public interface IDescriptible
 {
-    Id = 2,
-    Nombre = "Mouse",
-    Descripcion = "Inalámbrico",
-    Precio = 25
-});
-repoProductos.MostrarTodos();
+    string Descripcion { get; set; }
+    string ObtenerDescripcionCompleta();
+}
 
-// ✓ Funciona: Cliente implementa IIdentificable
-Repositorio<Cliente> repoClientes = new Repositorio<Cliente>();
-repoClientes.Agregar(new Cliente { Id = 100, Nombre = "Ana García" });
-repoClientes.MostrarTodos();
+// Clases que implementan las interfaces
+public class Producto : IIdentificable, IDescriptible
+{
+    public int Id { get; set; }
+    public string Nombre { get; set; }
+    public string Descripcion { get; set; }
+    public decimal Precio { get; set; }
+    
+    public string ObtenerIdentificador()
+    {
+        return $"PROD-{Id: D6}";
+    }
+    
+    public string ObtenerDescripcionCompleta()
+    {
+        return $"{Nombre}:  {Descripcion} (${Precio})";
+    }
+}
 
-// ✗ NO funciona: string no implementa IIdentificable
-// Repositorio<string> repoStrings = new Repositorio<string>(); // ERROR
+public class Cliente : IIdentificable
+{
+    public int Id { get; set; }
+    public string Nombre { get; set; }
+    public string Email { get; set; }
+    
+    public string ObtenerIdentificador()
+    {
+        return $"CLI-{Id: D6}";
+    }
+}
+
+// Repositorio genérico que requiere IIdentificable
+public class Repositorio<T> where T :  IIdentificable
+{
+    private List<T> items = new List<T>();
+    
+    public void Agregar(T item)
+    {
+        items. Add(item);
+    }
+    
+    // Podemos usar métodos de IIdentificable
+    Continúo desde donde se cortó:
+
+```markdown
+    // Podemos usar métodos de IIdentificable porque T : IIdentificable
+    public T BuscarPorId(int id)
+    {
+        foreach (T item in items)
+        {
+            if (item.Id == id)
+            {
+                return item;
+            }
+        }
+        return default(T);
+    }
+    
+    public void MostrarTodos()
+    {
+        Console.WriteLine($"\n=== Repositorio con {items.Count} elementos ===");
+        foreach (T item in items)
+        {
+            Console.WriteLine($"  {item.ObtenerIdentificador()}");
+        }
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        // ✓ Funciona:  Producto implementa IIdentificable
+        Repositorio<Producto> repoProductos = new Repositorio<Producto>();
+        repoProductos.Agregar(new Producto 
+        { 
+            Id = 1, 
+            Nombre = "Laptop", 
+            Descripcion = "Portátil gaming",
+            Precio = 1200 
+        });
+        repoProductos.Agregar(new Producto 
+        { 
+            Id = 2, 
+            Nombre = "Mouse", 
+            Descripcion = "Inalámbrico",
+            Precio = 25 
+        });
+        repoProductos.MostrarTodos();
+        
+        // ✓ Funciona: Cliente implementa IIdentificable
+        Repositorio<Cliente> repoClientes = new Repositorio<Cliente>();
+        repoClientes.Agregar(new Cliente { Id = 100, Nombre = "Ana García" });
+        repoClientes.MostrarTodos();
+        
+        // ✗ NO funciona: string no implementa IIdentificable
+        // Repositorio<string> repoStrings = new Repositorio<string>(); // ERROR
+    }
+}
 ```
 
 **`where T : notnull` (C# 8+)**
@@ -1597,6 +2706,28 @@ repoClientes.MostrarTodos();
 Restringe el tipo genérico a tipos no anulables (tanto tipos de valor como tipos de referencia no anulables).
 
 ```csharp
+public class ContenedorNoNulo<T> where T : notnull
+{
+    private T valor;
+
+    public ContenedorNoNulo(T valor)
+    {
+        this. valor = valor;
+    }
+
+    public T Valor
+    {
+        get => valor;
+        set => valor = value; // Garantizado que no es null
+    }
+
+    public void Mostrar()
+    {
+        // Seguro:  valor nunca será null
+        Console.WriteLine($"Valor: {valor. ToString()}");
+    }
+}
+
 // ✓ Funciona: int no es anulable
 ContenedorNoNulo<int> contenedor1 = new ContenedorNoNulo<int>(42);
 
@@ -1615,6 +2746,30 @@ ContenedorNoNulo<string> contenedor2 = new ContenedorNoNulo<string>("Hola");
 Restringe el tipo genérico a tipos no administrados (tipos de valor que no contienen referencias).
 
 ```csharp
+public class BufferSeguro<T> where T : unmanaged
+{
+    private T[] buffer;
+
+    public BufferSeguro(int tamaño)
+    {
+        buffer = new T[tamaño];
+    }
+
+    public unsafe void CopiarDesdeMemoria(T* fuente, int cantidad)
+    {
+        // Operaciones unsafe permitidas con tipos unmanaged
+        for (int i = 0; i < cantidad && i < buffer.Length; i++)
+        {
+            buffer[i] = fuente[i];
+        }
+    }
+
+    public int TamañoEnBytes()
+    {
+        return System.Runtime. InteropServices.Marshal.SizeOf<T>() * buffer.Length;
+    }
+}
+
 // ✓ Funciona: int es unmanaged
 BufferSeguro<int> buffer1 = new BufferSeguro<int>(100);
 Console.WriteLine($"Buffer de int: {buffer1.TamañoEnBytes()} bytes");
@@ -1640,6 +2795,77 @@ Puedes combinar varias restricciones para el mismo parámetro de tipo.  El orden
 4. Finalmente: `new()` (debe ser la última)
 
 ```csharp
+public class RepositorioCompleto<T>
+    where T : class, IIdentificable, IDescriptible, new()
+{
+    private List<T> items = new List<T>();
+
+    public T CrearNuevo()
+    {
+        // Podemos crear instancias (new())
+        T nuevoItem = new T();
+        return nuevoItem;
+    }
+
+    public void Agregar(T item)
+    {
+        // T es class:  puede ser null
+        if (item == null)
+        {
+            throw new ArgumentNullException(nameof(item));
+        }
+
+        items.Add(item);
+    }
+
+    public T BuscarPorId(int id)
+    {
+        // Podemos usar IIdentificable
+        foreach (T item in items)
+        {
+            if (item.Id == id)
+            {
+                return item;
+            }
+        }
+        return default(T); // null para tipos de referencia
+    }
+
+    public void MostrarDescripciones()
+    {
+        // Podemos usar IDescriptible
+        foreach (T item in items)
+        {
+            Console. WriteLine($"  [{item.ObtenerIdentificador()}] {item.ObtenerDescripcionCompleta()}");
+        }
+    }
+}
+public class Producto : IIdentificable, IDescriptible
+{
+    public int Id { get; set; }
+    public string Nombre { get; set; }
+    public string Descripcion { get; set; }
+    public decimal Precio { get; set; }
+
+    // Constructor sin parámetros requerido por new()
+    public Producto()
+    {
+        Nombre = "Producto nuevo";
+        Descripcion = "Sin descripción";
+        Precio = 0;
+    }
+
+    public string ObtenerIdentificador()
+    {
+        return $"PROD-{Id: D6}";
+    }
+
+    public string ObtenerDescripcionCompleta()
+    {
+        return $"{Nombre}:  {Descripcion} (${Precio})";
+    }
+}
+
 RepositorioCompleto<Producto> repo = new RepositorioCompleto<Producto>();
 
 // Crear instancia (gracias a new())
@@ -1675,7 +2901,62 @@ if (encontrado != null)
 Cuando tienes varios parámetros de tipo, cada uno puede tener sus propias restricciones:
 
 ```csharp
-Mapeador<ProductoDTO, ProductoViewModel> mapeador =
+public class Mapeador<TEntrada, TSalida>
+    where TEntrada : class, IIdentificable
+    where TSalida : class, new()
+{
+    public TSalida Mapear(TEntrada entrada, Action<TEntrada, TSalida> configurador)
+    {
+        if (entrada == null)
+        {
+            throw new ArgumentNullException(nameof(entrada));
+        }
+
+        // Crear instancia de salida (gracias a new())
+        TSalida salida = new TSalida();
+
+        // Configurar usando el delegate
+        configurador(entrada, salida);
+
+        return salida;
+    }
+
+    public TSalida[] MapearColeccion(TEntrada[] entradas, Action<TEntrada, TSalida> configurador)
+    {
+        TSalida[] salidas = new TSalida[entradas.Length];
+
+        for (int i = 0; i < entradas.Length; i++)
+        {
+            salidas[i] = Mapear(entradas[i], configurador);
+        }
+
+        return salidas;
+    }
+}
+public class ProductoDTO :  IIdentificable
+{
+    public int Id { get; set; }
+    public string Nombre { get; set; }
+    public decimal Precio { get; set; }
+
+    public string ObtenerIdentificador()
+    {
+        return $"PROD-{Id:D6}";
+    }
+}
+public class ProductoViewModel
+{
+    public string Identificador { get; set; }
+    public string NombreCompleto { get; set; }
+    public string PrecioFormateado { get; set; }
+
+    // Constructor sin parámetros requerido
+    public ProductoViewModel()
+    {
+    }
+}
+
+Mapeador<ProductoDTO, ProductoViewModel> mapeador = 
     new Mapeador<ProductoDTO, ProductoViewModel>();
 
 ProductoDTO[] productosDTO = new ProductoDTO[]
@@ -1705,6 +2986,52 @@ foreach (ProductoViewModel vm in viewModels)
 **Ejemplo 1: Conversor genérico con restricciones**
 
 ```csharp
+public class Conversor<TEntrada, TSalida>
+    where TEntrada : IConvertible
+    where TSalida : IConvertible
+{
+    public TSalida Convertir(TEntrada valor)
+    {
+        try
+        {
+            // IConvertible proporciona métodos de conversión
+            return (TSalida)Convert.ChangeType(valor, typeof(TSalida));
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $"No se puede convertir {typeof(TEntrada).Name} a {typeof(TSalida).Name}",
+                ex);
+        }
+    }
+
+    public TSalida[] ConvertirArray(TEntrada[] valores)
+    {
+        TSalida[] resultado = new TSalida[valores. Length];
+
+        for (int i = 0; i < valores.Length; i++)
+        {
+            resultado[i] = Convertir(valores[i]);
+        }
+
+        return resultado;
+    }
+
+    public bool TryConvertir(TEntrada valor, out TSalida resultado)
+    {
+        try
+        {
+            resultado = Convertir(valor);
+            return true;
+        }
+        catch
+        {
+            resultado = default(TSalida);
+            return false;
+        }
+    }
+}
+
 // Convertir int a double
 Conversor<int, double> conversor1 = new Conversor<int, double>();
 double resultado1 = conversor1.Convertir(42);
@@ -1730,21 +3057,104 @@ if (! conversor2.TryConvertir("abc", out int valor2))
 **Ejemplo 2: Caché genérica con restricciones**
 
 ```csharp
+public class Cache<T>
+    where T : class, IIdentificable, ICloneable
+{
+    private Dictionary<int, T> cache = new Dictionary<int, T>();
+    private int hits = 0;
+    private int misses = 0;
+
+    public void Almacenar(T item)
+    {
+        if (item == null)
+        {
+            throw new ArgumentNullException(nameof(item));
+        }
+
+        // Clonar para evitar modificaciones externas
+        T clon = (T)item.Clone();
+        cache[item.Id] = clon;
+    }
+
+    public T Obtener(int id)
+    {
+        if (cache.ContainsKey(id))
+        {
+            hits++;
+            // Devolver un clon para proteger el caché
+            return (T)cache[id].Clone();
+        }
+
+        misses++;
+        return null;
+    }
+
+    public bool Existe(int id)
+    {
+        return cache.ContainsKey(id);
+    }
+
+    public void Limpiar()
+    {
+        cache.Clear();
+        hits = 0;
+        misses = 0;
+    }
+
+    public void MostrarEstadisticas()
+    {
+        int total = hits + misses;
+        double tasaAciertos = total > 0 ? (hits * 100.0 / total) : 0;
+
+        Console.WriteLine($"\n=== Estadísticas del Caché ===");
+        Console.WriteLine($"Elementos almacenados: {cache.Count}");
+        Console.WriteLine($"Aciertos (hits): {hits}");
+        Console.WriteLine($"Fallos (misses): {misses}");
+        Console.WriteLine($"Tasa de aciertos:  {tasaAciertos: F2}%");
+    }
+}
+public class DocumentoCacheable :  IIdentificable, ICloneable
+{
+    public int Id { get; set; }
+    public string Titulo { get; set; }
+    public string Contenido { get; set; }
+
+    public string ObtenerIdentificador()
+    {
+        return $"DOC-{Id:D6}";
+    }
+
+    public object Clone()
+    {
+        return new DocumentoCacheable
+        {
+            Id = this.Id,
+            Titulo = this.Titulo,
+            Contenido = this.Contenido
+        };
+    }
+
+    public override string ToString()
+    {
+        return $"[{ObtenerIdentificador()}] {Titulo}";
+    }
+}
+
 Cache<DocumentoCacheable> cache = new Cache<DocumentoCacheable>();
 
 // Almacenar documentos
-cache.Almacenar(new DocumentoCacheable
-{
-    Id = 1,
-    Titulo = "Documento 1",
-    Contenido = "Contenido del documento 1"
+cache.Almacenar(new DocumentoCacheable 
+{ 
+    Id = 1, 
+    Titulo = "Documento 1", 
+    Contenido = "Contenido del documento 1" 
 });
 
-cache.Almacenar(new DocumentoCacheable
-{
-    Id = 2,
-    Titulo = "Documento 2",
-    Contenido = "Contenido del documento 2"
+cache.Almacenar(new DocumentoCacheable 
+{ 
+    Id = 2, 
+    Titulo = "Documento 2", 
+    Contenido = "Contenido del documento 2" 
 });
 
 // Acceder a documentos
@@ -1950,6 +3360,34 @@ Console.WriteLine($"Valor existente: {valor3}"); // 42
 **Ejemplo práctico: Búsqueda con resultado nullable**
 
 ```csharp
+public class Buscador
+{
+    private int[] numeros = { 10, 20, 30, 40, 50 };
+
+    public int? BuscarMayorQue(int limite)
+    {
+        foreach (int numero in numeros)
+        {
+            if (numero > limite)
+            {
+                return numero; // Encontrado
+            }
+        }
+
+        return null; // No encontrado
+    }
+
+    public int? BuscarEnIndice(int indice)
+    {
+        if (indice >= 0 && indice < numeros.Length)
+        {
+            return numeros[indice];
+        }
+
+        return null; // Índice inválido
+    }
+}
+
 Buscador buscador = new Buscador();
 
 // Búsqueda exitosa
@@ -2042,7 +3480,7 @@ Console.WriteLine($"Duplicar y luego sumar 10 a 5: {resultado}");
 
 ```csharp
 // Diccionario de operaciones
-Dictionary<string, Func<int, int, int>> calculadora =
+Dictionary<string, Func<int, int, int>> calculadora = 
     new Dictionary<string, Func<int, int, int>>
 {
     { "suma", Sumar },
@@ -2346,15 +3784,15 @@ C# proporciona tres delegates genéricos que cubren la mayoría de casos de uso,
 ```csharp
 // Action sin parámetros
 Action saludar = () => Console.WriteLine("¡Hola!");
-saludar(); // ¡Hola!
+saludar(); // ¡Hola! 
 
 // Action con 1 parámetro
-Action<string> saludarConNombre = nombre =>
+Action<string> saludarConNombre = nombre => 
     Console.WriteLine($"¡Hola, {nombre}!");
 saludarConNombre("Ana"); // ¡Hola, Ana!
 
 // Action con 2 parámetros
-Action<string, int> mostrarInfo = (nombre, edad) =>
+Action<string, int> mostrarInfo = (nombre, edad) => 
     Console.WriteLine($"{nombre} tiene {edad} años");
 mostrarInfo("Carlos", 30); // Carlos tiene 30 años
 
@@ -2677,7 +4115,7 @@ pipeline += Paso3;
 
 Console.WriteLine("=== Ejecutar pipeline ===");
 pipeline();
-// Salida:
+// Salida: 
 // 1. Inicializar
 // 2. Procesar
 // 3. Finalizar
@@ -2842,12 +4280,12 @@ Func<int, int, int, int> sumarTres = (a, b, c) => a + b + c;
 Console.WriteLine($"1 + 2 + 3 = {sumarTres(1, 2, 3)}"); // 6
 
 // Cuatro parámetros
-Func<string, string, string, string, string> concatenar =
+Func<string, string, string, string, string> concatenar = 
     (a, b, c, d) => $"{a} {b} {c} {d}";
 Console.WriteLine(concatenar("La", "programación", "es", "genial"));
 
 // Parámetros de diferentes tipos
-Func<string, int, bool, string> formatear =
+Func<string, int, bool, string> formatear = 
     (nombre, edad, activo) => $"{nombre}, {edad} años, {(activo ? "Activo" : "Inactivo")}";
 Console. WriteLine(formatear("Ana", 25, true));
 ```
@@ -2970,7 +4408,7 @@ Func<int, int, int> sumar = (x, y) => x + y;
 Func<string, int> longitud = texto => texto. Length;
 
 // Inferencia con múltiples parámetros de diferentes tipos
-Func<string, int, bool> verificarLongitud = (texto, longitudMinima) =>
+Func<string, int, bool> verificarLongitud = (texto, longitudMinima) => 
     texto.Length >= longitudMinima;
 
 Console.WriteLine(sumar(5, 3)); // 8
@@ -2987,7 +4425,7 @@ Puedes especificar explícitamente los tipos si lo prefieres o si el compilador 
 Func<int, int, int> dividir = (int a, int b) => a / b;
 
 // Con tipos explícitos (más verboso)
-Func<string, string, bool> sonIguales =
+Func<string, string, bool> sonIguales = 
     (string texto1, string texto2) => texto1 == texto2;
 
 Console.WriteLine(dividir(10, 2)); // 5
@@ -3117,8 +4555,8 @@ Func<string, string> procesar = datos =>
 {
     // Esta lambda captura 'configuracion'
     // Si 'configuracion' cambia externamente, el comportamiento cambia
-    return configuracion == "modo-simple"
-        ? datos. ToLower()
+    return configuracion == "modo-simple" 
+        ? datos. ToLower() 
         : datos. ToUpper();
 };
 
@@ -3554,14 +4992,14 @@ Console.WriteLine($"Producto: {producto}");
 // Producto: 120
 
 // Encontrar el máximo
-int maximo = OperacionesFuncionales.Reduce(numeros, int.MinValue,
+int maximo = OperacionesFuncionales.Reduce(numeros, int.MinValue, 
     (acum, n) => n > acum ? n : acum);
 Console.WriteLine($"Máximo: {maximo}");
 // Máximo:  5
 
 // Concatenar strings
 string[] palabras = { "Hola", "desde", "C#" };
-string frase = OperacionesFuncionales.Reduce(palabras, "",
+string frase = OperacionesFuncionales.Reduce(palabras, "", 
     (acum, palabra) => acum + (acum == "" ? "" : " ") + palabra);
 Console.WriteLine($"Frase: {frase}");
 // Frase: Hola desde C#
@@ -3603,7 +5041,7 @@ var nombres = OperacionesFuncionales.Map(productos, p => p.Nombre);
 Console.WriteLine($"\nNombres: [{string. Join(", ", nombres)}]");
 
 // Transformar a precios con descuento del 10%
-var preciosConDescuento = OperacionesFuncionales.Map(productos,
+var preciosConDescuento = OperacionesFuncionales.Map(productos, 
     p => p.Precio * 0.9m);
 Console.WriteLine($"\nPrecios con descuento: [{string.Join(", ", preciosConDescuento)}]");
 
@@ -3789,7 +5227,7 @@ stopwatch.Stop();
 Console.WriteLine($"Resultado:  {resultado}");
 Console.WriteLine($"Tiempo:  {stopwatch.ElapsedMilliseconds}ms");
 
-// Consideraciones:
+// Consideraciones: 
 // - Cada operación crea un array nuevo (uso de memoria)
 // - Se recorre el array múltiples veces (tiempo de CPU)
 // - Para grandes cantidades de datos, considerar otras estrategias
@@ -3814,6 +5252,21 @@ Los métodos de extensión son métodos estáticos que se pueden llamar como si 
 **Sintaxis:   palabra clave `this` en primer parámetro**
 
 ```csharp
+public static class ExtensionesString
+{
+    // Método de extensión para string
+    public static int ContarPalabras(this string texto)
+    {
+        if (string.IsNullOrWhiteSpace(texto))
+        {
+            return 0;
+        }
+
+        return texto.Split(new char[] { ' ', '\t', '\n' },
+            StringSplitOptions. RemoveEmptyEntries).Length;
+    }
+}
+
 string frase = "Hola mundo desde C#";
 
 // Llamar como método de instancia (gracias a la extensión)
@@ -3830,6 +5283,109 @@ Console.WriteLine($"Palabras (llamada estática): {palabras2}");
 **Extender tipos primitivos: `int`, `string`, etc.**
 
 ```csharp
+public static class ExtensionesNumericas
+{
+    // Extensión para int:  verificar si es par
+    public static bool EsPar(this int numero)
+    {
+        return numero % 2 == 0;
+    }
+
+    // Extensión para int: verificar si es primo
+    public static bool EsPrimo(this int numero)
+    {
+        if (numero < 2) return false;
+
+        for (int i = 2; i <= Math.Sqrt(numero); i++)
+        {
+            if (numero % i == 0) return false;
+        }
+
+        return true;
+    }
+
+    // Extensión para int: factorial
+    public static long Factorial(this int numero)
+    {
+        if (numero < 0)
+        {
+            throw new ArgumentException("El número debe ser no negativo");
+        }
+
+        if (numero == 0 || numero == 1)
+        {
+            return 1;
+        }
+
+        long resultado = 1;
+        for (int i = 2; i <= numero; i++)
+        {
+            resultado *= i;
+        }
+
+        return resultado;
+    }
+
+    // Extensión para double: redondear a n decimales
+    public static double RedondearA(this double numero, int decimales)
+    {
+        return Math.Round(numero, decimales);
+    }
+}
+public static class ExtensionesString
+{
+    // Capitalizar primera letra
+    public static string Capitalizar(this string texto)
+    {
+        if (string.IsNullOrEmpty(texto))
+        {
+            return texto;
+        }
+
+        return char.ToUpper(texto[0]) + texto.Substring(1).ToLower();
+    }
+
+    // Invertir string
+    public static string Invertir(this string texto)
+    {
+        if (string.IsNullOrEmpty(texto))
+        {
+            return texto;
+        }
+
+        char[] caracteres = texto.ToCharArray();
+        Array.Reverse(caracteres);
+        return new string(caracteres);
+    }
+
+    // Truncar con puntos suspensivos
+    public static string Truncar(this string texto, int longitudMaxima)
+    {
+        if (string.IsNullOrEmpty(texto) || texto.Length <= longitudMaxima)
+        {
+            return texto;
+        }
+
+        return texto.Substring(0, longitudMaxima - 3) + "...";
+    }
+
+    // Repetir n veces
+    public static string Repetir(this string texto, int veces)
+    {
+        if (veces <= 0)
+        {
+            return string.Empty;
+        }
+
+        string resultado = "";
+        for (int i = 0; i < veces; i++)
+        {
+            resultado += texto;
+        }
+        return resultado;
+    }
+}
+
 // Extensiones numéricas
 Console.WriteLine($"¿10 es par? {10.EsPar()}");
 Console.WriteLine($"¿7 es primo? {7.EsPrimo()}");
@@ -3846,6 +5402,90 @@ Console.WriteLine($"Repetir 'Ha' 3 veces: {"Ha". Repetir(3)}");
 **Extender arrays:**
 
 ```csharp
+public static class ExtensionesArray
+{
+    // Imprimir array
+    public static void Imprimir<T>(this T[] array)
+    {
+        Console.WriteLine($"[{string. Join(", ", array)}]");
+    }
+
+    // Obtener elementos en índices pares
+    public static T[] IndicesPares<T>(this T[] array)
+    {
+        int cantidad = (array.Length + 1) / 2;
+        T[] resultado = new T[cantidad];
+        int indice = 0;
+
+        for (int i = 0; i < array.Length; i += 2)
+        {
+            resultado[indice++] = array[i];
+        }
+
+        return resultado;
+    }
+
+    // Obtener elementos en índices impares
+    public static T[] IndicesImpares<T>(this T[] array)
+    {
+        int cantidad = array.Length / 2;
+        T[] resultado = new T[cantidad];
+        int indice = 0;
+
+        for (int i = 1; i < array.Length; i += 2)
+        {
+            resultado[indice++] = array[i];
+        }
+
+        return resultado;
+    }
+
+    // Intercalar dos arrays
+    public static T[] Intercalar<T>(this T[] array1, T[] array2)
+    {
+        int longitudTotal = array1.Length + array2.Length;
+        T[] resultado = new T[longitudTotal];
+
+        int i1 = 0, i2 = 0, ir = 0;
+
+        while (i1 < array1.Length || i2 < array2.Length)
+        {
+            if (i1 < array1.Length)
+            {
+                resultado[ir++] = array1[i1++];
+            }
+
+            if (i2 < array2.Length)
+            {
+                resultado[ir++] = array2[i2++];
+            }
+        }
+
+        return resultado;
+    }
+
+    // Dividir array en chunks
+    public static T[][] DividirEnChunks<T>(this T[] array, int tamañoChunk)
+    {
+        int numeroChunks = (int)Math.Ceiling(array.Length / (double)tamañoChunk);
+        T[][] resultado = new T[numeroChunks][];
+
+        for (int i = 0; i < numeroChunks; i++)
+        {
+            int inicio = i * tamañoChunk;
+            int tamaño = Math.Min(tamañoChunk, array.Length - inicio);
+            resultado[i] = new T[tamaño];
+
+            for (int j = 0; j < tamaño; j++)
+            {
+                resultado[i][j] = array[inicio + j];
+            }
+        }
+
+        return resultado;
+    }
+}
+
 int[] numeros = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
 // Imprimir
@@ -3879,6 +5519,44 @@ foreach (var chunk in chunks)
 **Ejemplos prácticos:**
 
 ```csharp
+public static class ExtensionesDateTime
+{
+    public static bool EsFinDeSemana(this DateTime fecha)
+    {
+        return fecha.DayOfWeek == DayOfWeek.Saturday ||
+               fecha.DayOfWeek == DayOfWeek.Sunday;
+    }
+
+    public static int EdadActual(this DateTime fechaNacimiento)
+    {
+        DateTime hoy = DateTime.Today;
+        int edad = hoy.Year - fechaNacimiento. Year;
+
+        if (fechaNacimiento.Date > hoy.AddYears(-edad))
+        {
+            edad--;
+        }
+
+        return edad;
+    }
+
+    public static string FormatoAmigable(this DateTime fecha)
+    {
+        TimeSpan diferencia = DateTime.Now - fecha;
+
+        if (diferencia.TotalMinutes < 1)
+            return "Hace unos segundos";
+        if (diferencia.TotalMinutes < 60)
+            return $"Hace {(int)diferencia.TotalMinutes} minutos";
+        if (diferencia.TotalHours < 24)
+            return $"Hace {(int)diferencia.TotalHours} horas";
+        if (diferencia.TotalDays < 7)
+            return $"Hace {(int)diferencia.TotalDays} días";
+
+        return fecha.ToString("dd/MM/yyyy");
+    }
+}
+
 DateTime hoy = DateTime.Today;
 Console.WriteLine($"¿Hoy es fin de semana? {hoy.EsFinDeSemana()}");
 
@@ -3894,6 +5572,47 @@ Console.WriteLine($"Formato amigable: {hace2Horas.FormatoAmigable()}");
 **Combinación de genéricos y extensiones:**
 
 ```csharp
+public static class ExtensionesGenericas
+{
+    // Imprimir cualquier tipo
+    public static void ImprimirInfo<T>(this T item)
+    {
+        Console.WriteLine($"Tipo: {typeof(T).Name}");
+        Console.WriteLine($"Valor: {item}");
+    }
+
+    // Clonar valor (para tipos valor)
+    public static T Clonar<T>(this T valor) where T : struct
+    {
+        return valor;
+    }
+
+    // Ejecutar acción n veces
+    public static void Repetir<T>(this T item, int veces, Action<T> accion)
+    {
+        for (int i = 0; i < veces; i++)
+        {
+            accion(item);
+        }
+    }
+
+    // Aplicar transformación
+    public static TResult Transformar<T, TResult>(this T item, Func<T, TResult> transformador)
+    {
+        return transformador(item);
+    }
+
+    // Ejecutar si cumple condición
+    public static T Si<T>(this T item, Func<T, bool> condicion, Action<T> accion)
+    {
+        if (condicion(item))
+        {
+            accion(item);
+        }
+        return item;
+    }
+}
+
 // Usar extensiones genéricas
 42.ImprimirInfo();
 "Hola".ImprimirInfo();
@@ -3913,6 +5632,33 @@ Console.WriteLine($"En mayúsculas: {textoMayusculas}");
 **Restricciones en métodos de extensión:**
 
 ```csharp
+public static class ExtensionesConRestricciones
+{
+    // Solo para tipos que implementan IComparable
+    public static bool EsMayorQue<T>(this T valor, T otro) where T : IComparable<T>
+    {
+        return valor.CompareTo(otro) > 0;
+    }
+
+    // Solo para tipos de referencia
+    public static bool EsNulo<T>(this T objeto) where T : class
+    {
+        return objeto == null;
+    }
+
+    // Solo para tipos valor
+    public static T?  ConvertirANullable<T>(this T valor) where T : struct
+    {
+        return new T?(valor);
+    }
+
+    // Solo para tipos con constructor sin parámetros
+    public static T CrearNuevaInstancia<T>(this T _) where T : new()
+    {
+        return new T();
+    }
+}
+
 // IComparable
 Console.WriteLine($"¿10 es mayor que 5? {10.EsMayorQue(5)}");
 Console.WriteLine($"¿'abc' es mayor que 'xyz'? {"abc".EsMayorQue("xyz")}");
@@ -3930,6 +5676,32 @@ Console.WriteLine($"Nullable: {nullable}");
 **Casos de uso avanzados:**
 
 ```csharp
+public static class ExtensionesAvanzadas
+{
+    // Encadenar validaciones
+    public static T ValidarQue<T>(this T valor, Func<T, bool> validacion, string mensajeError)
+    {
+        if (! validacion(valor))
+        {
+            throw new ArgumentException(mensajeError);
+        }
+        return valor;
+    }
+
+    // Pipeline fluido
+    public static T Aplicar<T>(this T valor, Action<T> accion)
+    {
+        accion(valor);
+        return valor;
+    }
+
+    // Ejecutar y retornar resultado
+    public static TResult Usando<T, TResult>(this T valor, Func<T, TResult> funcion)
+    {
+        return funcion(valor);
+    }
+}
+
 // Validaciones encadenadas
 try
 {
@@ -3959,6 +5731,114 @@ Console.WriteLine($"Final: {resultado}");
 Ahora vamos a convertir nuestras operaciones funcionales en métodos de extensión para arrays, lo que permite un uso más fluido. 
 
 ```csharp
+public static class ExtensionesArrayFuncional
+{
+    // Filter como extensión
+    public static T[] Filtrar<T>(this T[] array, Func<T, bool> predicado)
+    {
+        int contador = 0;
+        foreach (T elemento in array)
+        {
+            if (predicado(elemento))
+            {
+                contador++;
+            }
+        }
+
+        T[] resultado = new T[contador];
+        int indice = 0;
+
+        foreach (T elemento in array)
+        {
+            if (predicado(elemento))
+            {
+                resultado[indice++] = elemento;
+            }
+        }
+
+        return resultado;
+    }
+
+    // Map como extensión
+    public static TResult[] Mapear<T, TResult>(this T[] array, Func<T, TResult> transformador)
+    {
+        TResult[] resultado = new TResult[array.Length];
+
+        for (int i = 0; i < array.Length; i++)
+        {
+            resultado[i] = transformador(array[i]);
+        }
+
+        return resultado;
+    }
+
+    // Reduce como extensión
+    public static TResult Reducir<T, TResult>(
+        this T[] array,
+        TResult valorInicial,
+        Func<TResult, T, TResult> acumulador)
+    {
+        TResult resultado = valorInicial;
+
+        foreach (T elemento in array)
+        {
+            resultado = acumulador(resultado, elemento);
+        }
+
+        return resultado;
+    }
+
+    // ForEach como extensión
+    public static T[] ParaCadaElemento<T>(this T[] array, Action<T> accion)
+    {
+        foreach (T elemento in array)
+        {
+            accion(elemento);
+        }
+        return array; // Retornar el array para encadenar
+    }
+
+    // Count como extensión
+    public static int Contar<T>(this T[] array, Func<T, bool> predicado)
+    {
+        int contador = 0;
+        foreach (T elemento in array)
+        {
+            if (predicado(elemento))
+            {
+                contador++;
+            }
+        }
+        return contador;
+    }
+
+    // Any como extensión
+    public static bool Alguno<T>(this T[] array, Func<T, bool> predicado)
+    {
+        foreach (T elemento in array)
+        {
+            if (predicado(elemento))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // All como extensión
+    public static bool Todos<T>(this T[] array, Func<T, bool> predicado)
+    {
+        foreach (T elemento in array)
+        {
+            if (!predicado(elemento))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
 int[] numeros = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
 Console.WriteLine("=== Uso fluido con extensiones ===");
@@ -4112,6 +5992,58 @@ public static TipoResultado operator +(Tipo1 a, Tipo2 b)
 **`+`, `-`, `*`, `/`, `%`**
 
 ```csharp
+public class Vector2D
+{
+    public double X { get; set; }
+    public double Y { get; set; }
+
+    public Vector2D(double x, double y)
+    {
+        X = x;
+        Y = y;
+    }
+
+    // Sobrecarga del operador +
+    public static Vector2D operator +(Vector2D a, Vector2D b)
+    {
+        return new Vector2D(a.X + b. X, a.Y + b. Y);
+    }
+
+    // Sobrecarga del operador -
+    public static Vector2D operator -(Vector2D a, Vector2D b)
+    {
+        return new Vector2D(a.X - b.X, a.Y - b.Y);
+    }
+
+    // Sobrecarga del operador * (escalar)
+    public static Vector2D operator *(Vector2D v, double escalar)
+    {
+        return new Vector2D(v.X * escalar, v.Y * escalar);
+    }
+
+    // Sobrecarga del operador * (producto punto)
+    public static double operator *(Vector2D a, Vector2D b)
+    {
+        return a.X * b.X + a.Y * b.Y;
+    }
+
+    // Sobrecarga del operador / (división por escalar)
+    public static Vector2D operator /(Vector2D v, double escalar)
+    {
+        if (escalar == 0)
+        {
+            throw new DivideByZeroException("No se puede dividir por cero");
+        }
+
+        return new Vector2D(v.X / escalar, v. Y / escalar);
+    }
+
+    public override string ToString()
+    {
+        return $"({X}, {Y})";
+    }
+}
+
 Vector2D v1 = new Vector2D(3, 4);
 Vector2D v2 = new Vector2D(1, 2);
 
@@ -4135,6 +6067,45 @@ Console.WriteLine($"v1 / 2 = {division}"); // (1.5, 2)
 **Operadores unarios:   `+`, `-`, `++`, `--`**
 
 ```csharp
+public class Contador
+{
+    public int Valor { get; private set; }
+
+    public Contador(int valor)
+    {
+        Valor = valor;
+    }
+
+    // Operador unario +
+    public static Contador operator +(Contador c)
+    {
+        return new Contador(Math. Abs(c.Valor));
+    }
+
+    // Operador unario -
+    public static Contador operator -(Contador c)
+    {
+        return new Contador(-c.Valor);
+    }
+
+    // Operador ++
+    public static Contador operator ++(Contador c)
+    {
+        return new Contador(c.Valor + 1);
+    }
+
+    // Operador --
+    public static Contador operator --(Contador c)
+    {
+        return new Contador(c.Valor - 1);
+    }
+
+    public override string ToString()
+    {
+        return Valor.ToString();
+    }
+}
+
 Contador c1 = new Contador(-5);
 Console.WriteLine($"c1 = {c1}"); // -5
 
@@ -4155,6 +6126,90 @@ Console.WriteLine($"c4-- = {c4}"); // 10
 **Ejemplos con tipos personalizados (Vector, Matriz, Fracción):**
 
 ```csharp
+public class Fraccion
+{
+    public int Numerador { get; private set; }
+    public int Denominador { get; private set; }
+
+    public Fraccion(int numerador, int denominador)
+    {
+        if (denominador == 0)
+        {
+            throw new ArgumentException("El denominador no puede ser cero");
+        }
+
+        // Simplificar la fracción
+        int mcd = MCD(Math.Abs(numerador), Math.Abs(denominador));
+        Numerador = numerador / mcd;
+        Denominador = denominador / mcd;
+
+        // Mantener el signo en el numerador
+        if (Denominador < 0)
+        {
+            Numerador = -Numerador;
+            Denominador = -Denominador;
+        }
+    }
+
+    // Máximo Común Divisor
+    private static int MCD(int a, int b)
+    {
+        while (b != 0)
+        {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+
+    // Operador +
+    public static Fraccion operator +(Fraccion f1, Fraccion f2)
+    {
+        int nuevoNumerador = f1.Numerador * f2.Denominador + f2.Numerador * f1.Denominador;
+        int nuevoDenominador = f1.Denominador * f2.Denominador;
+        return new Fraccion(nuevoNumerador, nuevoDenominador);
+    }
+
+    // Operador -
+    public static Fraccion operator -(Fraccion f1, Fraccion f2)
+    {
+        int nuevoNumerador = f1.Numerador * f2.Denominador - f2.Numerador * f1.Denominador;
+        int nuevoDenominador = f1.Denominador * f2.Denominador;
+        return new Fraccion(nuevoNumerador, nuevoDenominador);
+    }
+
+    // Operador *
+    public static Fraccion operator *(Fraccion f1, Fraccion f2)
+    {
+        return new Fraccion(f1.Numerador * f2.Numerador, f1.Denominador * f2.Denominador);
+    }
+
+    // Operador /
+    public static Fraccion operator /(Fraccion f1, Fraccion f2)
+    {
+        if (f2.Numerador == 0)
+        {
+            throw new DivideByZeroException("No se puede dividir por cero");
+        }
+        return new Fraccion(f1.Numerador * f2.Denominador, f1.Denominador * f2.Numerador);
+    }
+
+    public override string ToString()
+    {
+        if (Denominador == 1)
+        {
+            return Numerador. ToString();
+        }
+        return $"{Numerador}/{Denominador}";
+    }
+
+    public double ToDouble()
+    {
+        return (double)Numerador / Denominador;
+    }
+}
+
 Fraccion f1 = new Fraccion(1, 2);  // 1/2
 Fraccion f2 = new Fraccion(1, 3);  // 1/3
 
@@ -4162,7 +6217,7 @@ Console.WriteLine($"f1 = {f1}");
 Console.WriteLine($"f2 = {f2}");
 
 Fraccion suma = f1 + f2;
-Console.WriteLine($"f1 + f2 = {suma} = {suma.ToDouble()}"); // 5/6 = 0.8333...
+Console.WriteLine($"f1 + f2 = {suma} = {suma.ToDouble()}"); // 5/6 = 0.8333... 
 
 Fraccion resta = f1 - f2;
 Console.WriteLine($"f1 - f2 = {resta} = {resta.ToDouble()}"); // 1/6 = 0.1666...
@@ -4183,6 +6238,88 @@ Console.WriteLine($"f1 + f2 * 2 = {resultado} = {resultado.ToDouble()}");
 **`==`, `!=`, `<`, `>`, `<=`, `>=`**
 
 ```csharp
+public class Dinero
+{
+    public decimal Cantidad { get; private set; }
+    public string Moneda { get; private set; }
+
+    public Dinero(decimal cantidad, string moneda)
+    {
+        Cantidad = cantidad;
+        Moneda = moneda. ToUpper();
+    }
+
+    // Operador == (debe sobrecargarse con !=)
+    public static bool operator ==(Dinero d1, Dinero d2)
+    {
+        if (ReferenceEquals(d1, d2)) return true;
+        if (ReferenceEquals(d1, null) || ReferenceEquals(d2, null)) return false;
+
+        return d1.Cantidad == d2.Cantidad && d1.Moneda == d2.Moneda;
+    }
+
+    // Operador !=
+    public static bool operator ! =(Dinero d1, Dinero d2)
+    {
+        return !(d1 == d2);
+    }
+
+    // Operador < (debe sobrecargarse con >)
+    public static bool operator <(Dinero d1, Dinero d2)
+    {
+        if (d1.Moneda != d2.Moneda)
+        {
+            throw new InvalidOperationException("No se pueden comparar cantidades de diferentes monedas");
+        }
+
+        return d1.Cantidad < d2.Cantidad;
+    }
+
+    // Operador >
+    public static bool operator >(Dinero d1, Dinero d2)
+    {
+        if (d1.Moneda != d2.Moneda)
+        {
+            throw new InvalidOperationException("No se pueden comparar cantidades de diferentes monedas");
+        }
+
+        return d1.Cantidad > d2.Cantidad;
+    }
+
+    // Operador <= (debe sobrecargarse con >=)
+    public static bool operator <=(Dinero d1, Dinero d2)
+    {
+        return d1 < d2 || d1 == d2;
+    }
+
+    // Operador >=
+    public static bool operator >=(Dinero d1, Dinero d2)
+    {
+        return d1 > d2 || d1 == d2;
+    }
+
+    // Sobrescribir Equals (requerido al sobrecargar ==)
+    public override bool Equals(object obj)
+    {
+        if (obj is Dinero otro)
+        {
+            return this == otro;
+        }
+        return false;
+    }
+
+    // Sobrescribir GetHashCode (requerido al sobrescribir Equals)
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Cantidad, Moneda);
+    }
+
+    public override string ToString()
+    {
+        return $"{Cantidad: F2} {Moneda}";
+    }
+}
+
 Dinero d1 = new Dinero(100, "EUR");
 Dinero d2 = new Dinero(150, "EUR");
 Dinero d3 = new Dinero(100, "EUR");
@@ -4224,6 +6361,52 @@ Si implementas uno, DEBES implementar el otro.
 Si sobrecargas `==` y `!=`, **debes** sobrescribir `Equals()` y `GetHashCode()`:
 
 ```csharp
+public class Punto
+{
+    public int X { get; set; }
+    public int Y { get; set; }
+
+    public Punto(int x, int y)
+    {
+        X = x;
+        Y = y;
+    }
+
+    // Operadores == y !=
+    public static bool operator ==(Punto p1, Punto p2)
+    {
+        if (ReferenceEquals(p1, p2)) return true;
+        if (ReferenceEquals(p1, null) || ReferenceEquals(p2, null)) return false;
+        return p1.X == p2.X && p1.Y == p2.Y;
+    }
+
+    public static bool operator !=(Punto p1, Punto p2)
+    {
+        return !(p1 == p2);
+    }
+
+    // OBLIGATORIO: sobrescribir Equals
+    public override bool Equals(object obj)
+    {
+        if (obj is Punto otro)
+        {
+            return this == otro;
+        }
+        return false;
+    }
+
+    // OBLIGATORIO: sobrescribir GetHashCode
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(X, Y);
+    }
+
+    public override string ToString()
+    {
+        return $"({X}, {Y})";
+    }
+}
+
 Punto p1 = new Punto(3, 4);
 Punto p2 = new Punto(3, 4);
 Punto p3 = new Punto(5, 6);
@@ -4244,6 +6427,61 @@ Console.WriteLine($"Elementos únicos: {conjunto.Count}"); // 2 (p1 y p2 son igu
 **`true`, `false`, `!`, `&`, `|`, `^`**
 
 ```csharp
+public class EstadoOperacion
+{
+    public bool Completado { get; set; }
+    public bool ConErrores { get; set; }
+
+    public EstadoOperacion(bool completado, bool conErrores)
+    {
+        Completado = completado;
+        ConErrores = conErrores;
+    }
+
+    // Operador true (permite usar en if)
+    public static bool operator true(EstadoOperacion estado)
+    {
+        return estado.Completado && !estado.ConErrores;
+    }
+
+    // Operador false (debe implementarse con true)
+    public static bool operator false(EstadoOperacion estado)
+    {
+        return ! estado.Completado || estado. ConErrores;
+    }
+
+    // Operador !  (negación)
+    public static EstadoOperacion operator !(EstadoOperacion estado)
+    {
+        return new EstadoOperacion(!estado.Completado, estado.ConErrores);
+    }
+
+    // Operador &
+    public static EstadoOperacion operator &(EstadoOperacion e1, EstadoOperacion e2)
+    {
+        return new EstadoOperacion(
+            e1.Completado && e2.Completado,
+            e1.ConErrores || e2.ConErrores
+        );
+    }
+
+    // Operador |
+    public static EstadoOperacion operator |(EstadoOperacion e1, EstadoOperacion e2)
+    {
+        return new EstadoOperacion(
+            e1.Completado || e2.Completado,
+            e1.ConErrores && e2.ConErrores
+        );
+    }
+
+    public override string ToString()
+    {
+        string estado = Completado ? "Completado" : "No completado";
+        string errores = ConErrores ? "con errores" : "sin errores";
+        return $"{estado}, {errores}";
+    }
+}
+
 EstadoOperacion op1 = new EstadoOperacion(true, false);   // Completado sin errores
 EstadoOperacion op2 = new EstadoOperacion(true, true);    // Completado con errores
 EstadoOperacion op3 = new EstadoOperacion(false, false);  // No completado
@@ -4291,6 +6529,39 @@ Los operadores de conversión permiten definir conversiones entre tu tipo y otro
 La conversión implícita se realiza automáticamente, sin necesidad de un cast explícito.  Úsala cuando **la conversión siempre es segura** y no pierde información.
 
 ```csharp
+public class Temperatura
+{
+    public double Celsius { get; private set; }
+
+    public Temperatura(double celsius)
+    {
+        Celsius = celsius;
+    }
+
+    // Conversión implícita de double a Temperatura
+    public static implicit operator Temperatura(double celsius)
+    {
+        return new Temperatura(celsius);
+    }
+
+    // Conversión implícita de Temperatura a double
+    public static implicit operator double(Temperatura temp)
+    {
+        return temp.Celsius;
+    }
+
+    // Conversión implícita a string
+    public static implicit operator string(Temperatura temp)
+    {
+        return $"{temp.Celsius}°C";
+    }
+
+    public override string ToString()
+    {
+        return $"{Celsius}°C";
+    }
+}
+
 // Conversión implícita de double a Temperatura
 Temperatura temp1 = 25.5; // Automática, sin cast
 Console.WriteLine($"Temperatura 1: {temp1}");
@@ -4314,6 +6585,49 @@ Console.WriteLine($"Suma: {suma}");
 La conversión explícita requiere un cast.  Úsala cuando **la conversión puede fallar** o **perder información**.
 
 ```csharp
+public class Fraccion
+{
+    public int Numerador { get; private set; }
+    public int Denominador { get; private set; }
+
+    public Fraccion(int numerador, int denominador)
+    {
+        if (denominador == 0)
+        {
+            throw new ArgumentException("El denominador no puede ser cero");
+        }
+
+        Numerador = numerador;
+        Denominador = denominador;
+    }
+
+    // Conversión explícita de double a Fraccion (puede perder precisión)
+    public static explicit operator Fraccion(double valor)
+    {
+        // Conversión simple (puede no ser exacta)
+        const int precision = 1000000;
+        int numerador = (int)(valor * precision);
+        return new Fraccion(numerador, precision);
+    }
+
+    // Conversión explícita de Fraccion a int (pierde la parte fraccionaria)
+    public static explicit operator int(Fraccion f)
+    {
+        return f.Numerador / f. Denominador;
+    }
+
+    // Conversión implícita a double (segura, no pierde información conceptual)
+    public static implicit operator double(Fraccion f)
+    {
+        return (double)f.Numerador / f.Denominador;
+    }
+
+    public override string ToString()
+    {
+        return $"{Numerador}/{Denominador}";
+    }
+}
+
 // Conversión explícita (requiere cast)
 Fraccion f1 = (Fraccion)0.5; // REQUIERE cast explícito
 Console.WriteLine($"0.5 como fracción: {f1}");
@@ -4335,6 +6649,39 @@ Console.WriteLine($"7/2 como double: {decimal1}"); // 3.5
 | **Explícita** | La conversión puede fallar o perder información         | `double` → `int`, `long` → `int`, `string` → número |
 
 ```csharp
+public class Dinero
+{
+    public decimal Cantidad { get; private set; }
+
+    public Dinero(decimal cantidad)
+    {
+        Cantidad = cantidad;
+    }
+
+    // Implícita: decimal a Dinero (siempre segura)
+    public static implicit operator Dinero(decimal cantidad)
+    {
+        return new Dinero(cantidad);
+    }
+
+    // Implícita: Dinero a decimal (siempre segura)
+    public static implicit operator decimal(Dinero dinero)
+    {
+        return dinero.Cantidad;
+    }
+
+    // Explícita: Dinero a int (pierde decimales)
+    public static explicit operator int(Dinero dinero)
+    {
+        return (int)dinero.Cantidad;
+    }
+
+    public override string ToString()
+    {
+        return $"${Cantidad:F2}";
+    }
+}
+
 // Conversión implícita
 Dinero d1 = 100.50m; // Automática
 decimal valor = d1;   // Automática
@@ -4542,6 +6889,47 @@ else // resultado > 0
 **Implementar en tipos propios:**
 
 ```csharp
+public class Persona : IComparable<Persona>
+{
+    public string Nombre { get; set; }
+    public string Apellido { get; set; }
+    public int Edad { get; set; }
+
+    public Persona(string nombre, string apellido, int edad)
+    {
+        Nombre = nombre;
+        Apellido = apellido;
+        Edad = edad;
+    }
+
+    // Implementación de IComparable<Persona>
+    // Orden natural: por apellido, luego por nombre
+    public int CompareTo(Persona other)
+    {
+        // Manejar caso null
+        if (other == null)
+        {
+            return 1; // this es mayor que null
+        }
+
+        // Comparar por apellido primero
+        int comparacionApellido = this.Apellido.CompareTo(other.Apellido);
+
+        if (comparacionApellido != 0)
+        {
+            return comparacionApellido; // Apellidos diferentes
+        }
+
+        // Si apellidos son iguales, comparar por nombre
+        return this. Nombre.CompareTo(other.Nombre);
+    }
+
+    public override string ToString()
+    {
+        return $"{Apellido}, {Nombre} ({Edad} años)";
+    }
+}
+
 Persona p1 = new Persona("Juan", "García", 30);
 Persona p2 = new Persona("Ana", "López", 25);
 Persona p3 = new Persona("Pedro", "García", 28);
@@ -4563,6 +6951,41 @@ Console.WriteLine($"{p1} comparado consigo mismo: {comparacion3}");
 **Ejemplo con tipo numérico personalizado:**
 
 ```csharp
+public class Dinero :  IComparable<Dinero>
+{
+    public decimal Cantidad { get; private set; }
+    public string Moneda { get; private set; }
+
+    public Dinero(decimal cantidad, string moneda)
+    {
+        Cantidad = cantidad;
+        Moneda = moneda. ToUpper();
+    }
+
+    public int CompareTo(Dinero other)
+    {
+        if (other == null)
+        {
+            return 1;
+        }
+
+        // Solo comparar si son de la misma moneda
+        if (this.Moneda != other.Moneda)
+        {
+            throw new ArgumentException(
+                $"No se pueden comparar {this.Moneda} con {other.Moneda}");
+        }
+
+        // Comparar cantidades
+        return this.Cantidad.CompareTo(other. Cantidad);
+    }
+
+    public override string ToString()
+    {
+        return $"{Cantidad: F2} {Moneda}";
+    }
+}
+
 Dinero d1 = new Dinero(100, "EUR");
 Dinero d2 = new Dinero(150, "EUR");
 Dinero d3 = new Dinero(100, "USD");
@@ -4592,6 +7015,33 @@ Al implementar `IComparable<T>`, debes cumplir con estas reglas:
 4. **Consistencia con null**: `x.CompareTo(null)` debe retornar un valor positivo
 
 ```csharp
+public class Numero : IComparable<Numero>
+{
+    public int Valor { get; set; }
+
+    public Numero(int valor)
+    {
+        Valor = valor;
+    }
+
+    public int CompareTo(Numero other)
+    {
+        // Regla:  manejar null
+        if (other == null)
+        {
+            return 1; // this > null
+        }
+
+        // Comparación simple que cumple todas las reglas
+        return this. Valor.CompareTo(other.Valor);
+    }
+
+    public override string ToString()
+    {
+        return Valor.ToString();
+    }
+}
+
 Numero n1 = new Numero(5);
 Numero n2 = new Numero(10);
 Numero n3 = new Numero(3);
@@ -4620,6 +7070,47 @@ Console.WriteLine($"Consistencia con null: n1.CompareTo(null) > 0: {n1.CompareTo
 Si implementas `IComparable<T>`, deberías asegurarte de que `CompareTo` sea consistente con `Equals`:
 
 ```csharp
+public class Producto : IComparable<Producto>
+{
+    public int Id { get; set; }
+    public string Nombre { get; set; }
+    public decimal Precio { get; set; }
+
+    public Producto(int id, string nombre, decimal precio)
+    {
+        Id = id;
+        Nombre = nombre;
+        Precio = precio;
+    }
+
+    // Orden natural: por precio
+    public int CompareTo(Producto other)
+    {
+        if (other == null) return 1;
+        return this.Precio.CompareTo(other.Precio);
+    }
+
+    // Equals: por Id (identidad)
+    public override bool Equals(object obj)
+    {
+        if (obj is Producto otro)
+        {
+            return this.Id == otro.Id;
+        }
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode();
+    }
+
+    public override string ToString()
+    {
+        return $"{Nombre} (${Precio})";
+    }
+}
+
 Producto p1 = new Producto(1, "Laptop", 1200);
 Producto p2 = new Producto(2, "Mouse", 25);
 Producto p3 = new Producto(1, "Laptop", 1200); // Mismo Id que p1
@@ -4643,6 +7134,32 @@ Console.WriteLine($"{p1} equals {p3}: {p1.Equals(p3)}"); // True (mismo Id)
 Cuando un tipo implementa `IComparable<T>`, puedes usar `Array.Sort` directamente:
 
 ```csharp
+public class Estudiante : IComparable<Estudiante>
+{
+    public string Nombre { get; set; }
+    public double Promedio { get; set; }
+
+    public Estudiante(string nombre, double promedio)
+    {
+        Nombre = nombre;
+        Promedio = promedio;
+    }
+
+    // Orden natural: por promedio (descendente)
+    public int CompareTo(Estudiante other)
+    {
+        if (other == null) return 1;
+
+        // Descendente: invertir la comparación
+        return other. Promedio.CompareTo(this.Promedio);
+    }
+
+    public override string ToString()
+    {
+        return $"{Nombre}: {Promedio:F2}";
+    }
+}
+
 Estudiante[] estudiantes = new Estudiante[]
 {
     new Estudiante("Ana", 8.5),
@@ -4671,6 +7188,43 @@ foreach (var est in estudiantes)
 **Ejemplos prácticos con arrays de objetos personalizados:**
 
 ```csharp
+public class Libro : IComparable<Libro>
+{
+    public string Titulo { get; set; }
+    public string Autor { get; set; }
+    public int AñoPublicacion { get; set; }
+    public int Paginas { get; set; }
+
+    public Libro(string titulo, string autor, int año, int paginas)
+    {
+        Titulo = titulo;
+        Autor = autor;
+        AñoPublicacion = año;
+        Paginas = paginas;
+    }
+
+    // Orden natural: por autor, luego por título
+    public int CompareTo(Libro other)
+    {
+        if (other == null) return 1;
+
+        // Primero por autor
+        int comparacionAutor = this.Autor. CompareTo(other.Autor);
+        if (comparacionAutor != 0)
+        {
+            return comparacionAutor;
+        }
+
+        // Si el autor es el mismo, por título
+        return this.Titulo.CompareTo(other.Titulo);
+    }
+
+    public override string ToString()
+    {
+        return $"\"{Titulo}\" por {Autor} ({AñoPublicacion})";
+    }
+}
+
 Libro[] biblioteca = new Libro[]
 {
     new Libro("El Quijote", "Cervantes", 1605, 863),
@@ -4708,6 +7262,32 @@ if (indice >= 0)
 **Ejemplo con fechas:**
 
 ```csharp
+public class Evento : IComparable<Evento>
+{
+    public string Nombre { get; set; }
+    public DateTime Fecha { get; set; }
+    public string Lugar { get; set; }
+
+    public Evento(string nombre, DateTime fecha, string lugar)
+    {
+        Nombre = nombre;
+        Fecha = fecha;
+        Lugar = lugar;
+    }
+
+    // Orden natural: cronológico (por fecha)
+    public int CompareTo(Evento other)
+    {
+        if (other == null) return 1;
+        return this.Fecha.CompareTo(other.Fecha);
+    }
+
+    public override string ToString()
+    {
+        return $"{Nombre} - {Fecha:dd/MM/yyyy} ({Lugar})";
+    }
+}
+
 Evento[] agenda = new Evento[]
 {
     new Evento("Conferencia C#", new DateTime(2024, 6, 15), "Madrid"),
@@ -4783,6 +7363,58 @@ Es similar a `CompareTo`, pero opera sobre dos objetos externos en lugar de comp
 **Crear clases comparadoras personalizadas:**
 
 ```csharp
+public class Persona
+{
+    public string Nombre { get; set; }
+    public string Apellido { get; set; }
+    public int Edad { get; set; }
+
+    public Persona(string nombre, string apellido, int edad)
+    {
+        Nombre = nombre;
+        Apellido = apellido;
+        Edad = edad;
+    }
+
+    public override string ToString()
+    {
+        return $"{Nombre} {Apellido} ({Edad} años)";
+    }
+}
+public class ComparadorPorEdad : IComparer<Persona>
+{
+    public int Compare(Persona x, Persona y)
+    {
+        if (x == null && y == null) return 0;
+        if (x == null) return -1;
+        if (y == null) return 1;
+
+        return x.Edad.CompareTo(y.Edad);
+    }
+}
+public class ComparadorPorNombre : IComparer<Persona>
+{
+    public int Compare(Persona x, Persona y)
+    {
+        if (x == null && y == null) return 0;
+        if (x == null) return -1;
+        if (y == null) return 1;
+
+        return x.Nombre.CompareTo(y. Nombre);
+    }
+}
+public class ComparadorPorApellido : IComparer<Persona>
+{
+    public int Compare(Persona x, Persona y)
+    {
+        if (x == null && y == null) return 0;
+        if (x == null) return -1;
+        if (y == null) return 1;
+
+        return x.Apellido. CompareTo(y.Apellido);
+    }
+}
+
 Persona[] personas = new Persona[]
 {
     new Persona("Juan", "García", 30),
@@ -4826,6 +7458,58 @@ foreach (var p in personas)
 **Múltiples criterios de ordenación:**
 
 ```csharp
+public class Producto
+{
+    public string Nombre { get; set; }
+    public string Categoria { get; set; }
+    public decimal Precio { get; set; }
+    public int Stock { get; set; }
+
+    public Producto(string nombre, string categoria, decimal precio, int stock)
+    {
+        Nombre = nombre;
+        Categoria = categoria;
+        Precio = precio;
+        Stock = stock;
+    }
+
+    public override string ToString()
+    {
+        return $"{Nombre} ({Categoria}) - ${Precio} [Stock: {Stock}]";
+    }
+}
+public class ComparadorCategoriaPrecio : IComparer<Producto>
+{
+    public int Compare(Producto x, Producto y)
+    {
+        if (x == null && y == null) return 0;
+        if (x == null) return -1;
+        if (y == null) return 1;
+
+        // Primero por categoría
+        int comparacionCategoria = x.Categoria.CompareTo(y. Categoria);
+        if (comparacionCategoria != 0)
+        {
+            return comparacionCategoria;
+        }
+
+        // Si categorías iguales, por precio
+        return x.Precio.CompareTo(y.Precio);
+    }
+}
+public class ComparadorStockDescendente : IComparer<Producto>
+{
+    public int Compare(Producto x, Producto y)
+    {
+        if (x == null && y == null) return 0;
+        if (x == null) return -1;
+        if (y == null) return 1;
+
+        // Descendente: invertir la comparación
+        return y.Stock.CompareTo(x.Stock);
+    }
+}
+
 Producto[] inventario = new Producto[]
 {
     new Producto("Laptop", "Electrónica", 1200, 5),
@@ -4861,6 +7545,22 @@ foreach (var p in inventario)
 **Comparadores inversos:**
 
 ```csharp
+public class ComparadorInverso<T> : IComparer<T>
+{
+    private IComparer<T> comparadorOriginal;
+
+    public ComparadorInverso(IComparer<T> comparadorOriginal)
+    {
+        this.comparadorOriginal = comparadorOriginal;
+    }
+
+    public int Compare(T x, T y)
+    {
+        // Invertir el resultado del comparador original
+        return comparadorOriginal.Compare(y, x);
+    }
+}
+
 Persona[] personas = new Persona[]
 {
     new Persona("Juan", "García", 30),
@@ -4890,6 +7590,50 @@ foreach (var p in personas)
 **Pasar a métodos de ordenación:    `Array.Sort<T>(T[] array, IComparer<T> comparer)`**
 
 ```csharp
+public class Empleado
+{
+    public string Nombre { get; set; }
+    public string Departamento { get; set; }
+    public decimal Salario { get; set; }
+    public DateTime FechaContratacion { get; set; }
+
+    public Empleado(string nombre, string departamento, decimal salario, DateTime fecha)
+    {
+        Nombre = nombre;
+        Departamento = departamento;
+        Salario = salario;
+        FechaContratacion = fecha;
+    }
+
+    public override string ToString()
+    {
+        return $"{Nombre} ({Departamento}) - ${Salario:F0} - {FechaContratacion:dd/MM/yyyy}";
+    }
+}
+public class ComparadorPorSalario : IComparer<Empleado>
+{
+    public int Compare(Empleado x, Empleado y)
+    {
+        if (x == null && y == null) return 0;
+        if (x == null) return -1;
+        if (y == null) return 1;
+
+        return x.Salario.CompareTo(y.Salario);
+    }
+}
+public class ComparadorPorAntiguedad : IComparer<Empleado>
+{
+    public int Compare(Empleado x, Empleado y)
+    {
+        if (x == null && y == null) return 0;
+        if (x == null) return -1;
+        if (y == null) return 1;
+
+        // Fecha más antigua primero
+        return x.FechaContratacion.CompareTo(y.FechaContratacion);
+    }
+}
+
 Empleado[] empleados = new Empleado[]
 {
     new Empleado("Ana García", "IT", 50000, new DateTime(2020, 3, 15)),
@@ -4950,7 +7694,7 @@ foreach (var p in personas)
 }
 
 // Crear comparador con lambda: ordenar por longitud del nombre
-var comparadorLongitudNombre = Comparer<Persona>.Create((p1, p2) =>
+var comparadorLongitudNombre = Comparer<Persona>.Create((p1, p2) => 
     p1.Nombre. Length.CompareTo(p2.Nombre.Length));
 Array.Sort(personas, comparadorLongitudNombre);
 
@@ -4961,7 +7705,7 @@ foreach (var p in personas)
 }
 
 // Comparador descendente con lambda
-var comparadorEdadDesc = Comparer<Persona>. Create((p1, p2) =>
+var comparadorEdadDesc = Comparer<Persona>. Create((p1, p2) => 
     p2.Edad.CompareTo(p1.Edad)); // Invertido
 Array.Sort(personas, comparadorEdadDesc);
 
@@ -4977,6 +7721,27 @@ foreach (var p in personas)
 **Ordenar por múltiples campos:**
 
 ```csharp
+public class Estudiante
+{
+    public string Nombre { get; set; }
+    public string Carrera { get; set; }
+    public int Semestre { get; set; }
+    public double Promedio { get; set; }
+
+    public Estudiante(string nombre, string carrera, int semestre, double promedio)
+    {
+        Nombre = nombre;
+        Carrera = carrera;
+        Semestre = semestre;
+        Promedio = promedio;
+    }
+
+    public override string ToString()
+    {
+        return $"{Nombre} - {Carrera} (Sem.  {Semestre}) - Promedio: {Promedio: F2}";
+    }
+}
+
 Estudiante[] estudiantes = new Estudiante[]
 {
     new Estudiante("Ana", "Ingeniería", 5, 8.5),
@@ -5066,6 +7831,29 @@ Console.WriteLine($"  [{string.Join(", ", palabrasPorLongitud)}]");
 **Comparadores complejos:**
 
 ```csharp
+public class Tarea
+{
+    public string Titulo { get; set; }
+    public int Prioridad { get; set; } // 1 = Alta, 2 = Media, 3 = Baja
+    public DateTime FechaVencimiento { get; set; }
+    public bool Completada { get; set; }
+
+    public Tarea(string titulo, int prioridad, DateTime fechaVencimiento, bool completada)
+    {
+        Titulo = titulo;
+        Prioridad = prioridad;
+        FechaVencimiento = fechaVencimiento;
+        Completada = completada;
+    }
+
+    public override string ToString()
+    {
+        string prioridadTexto = Prioridad == 1 ? "Alta" :  Prioridad == 2 ?  "Media" : "Baja";
+        string estadoTexto = Completada ?  "✓" : "○";
+        return $"{estadoTexto} {Titulo} [Prioridad: {prioridadTexto}] - Vence: {FechaVencimiento:dd/MM/yyyy}";
+    }
+}
+
 Tarea[] tareas = new Tarea[]
 {
     new Tarea("Preparar presentación", 1, new DateTime(2024, 6, 10), false),
@@ -5138,6 +7926,53 @@ Retorna `true` si el objeto actual es igual a `other`, `false` en caso contrario
 **Implementar en tipos propios:**
 
 ```csharp
+public class Punto : IEquatable<Punto>
+{
+    public int X { get; set; }
+    public int Y { get; set; }
+
+    public Punto(int x, int y)
+    {
+        X = x;
+        Y = y;
+    }
+
+    // Implementación de IEquatable<Punto>
+    public bool Equals(Punto other)
+    {
+        // Verificar null
+        if (other == null)
+        {
+            return false;
+        }
+
+        // Comparar campos
+        return this.X == other.X && this.Y == other.Y;
+    }
+
+    // También debemos sobrescribir Object.Equals
+    public override bool Equals(object obj)
+    {
+        // Usar Equals(Punto other) si obj es un Punto
+        if (obj is Punto otroPunto)
+        {
+            return Equals(otroPunto);
+        }
+        return false;
+    }
+
+    // Y sobrescribir GetHashCode
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(X, Y);
+    }
+
+    public override string ToString()
+    {
+        return $"({X}, {Y})";
+    }
+}
+
 Punto p1 = new Punto(3, 4);
 Punto p2 = new Punto(3, 4);
 Punto p3 = new Punto(5, 6);
@@ -5158,6 +7993,47 @@ Console.WriteLine($"p1.Equals((object)p2): {p1.Equals((object)p2)}"); // True
 Al implementar `IEquatable<T>`, siempre debes también sobrescribir `Object.Equals`:
 
 ```csharp
+public class ProductoCodigo : IEquatable<ProductoCodigo>
+{
+    public string Codigo { get; set; }
+    public string Nombre { get; set; }
+
+    public ProductoCodigo(string codigo, string nombre)
+    {
+        Codigo = codigo;
+        Nombre = nombre;
+    }
+
+    // IEquatable<ProductoCodigo>:  comparación fuertemente tipada
+    public bool Equals(ProductoCodigo other)
+    {
+        if (other == null)
+        {
+            return false;
+        }
+
+        // Dos productos son iguales si tienen el mismo código
+        return this.Codigo == other.Codigo;
+    }
+
+    // Object.Equals: comparación genérica
+    public override bool Equals(object obj)
+    {
+        return Equals(obj as ProductoCodigo);
+    }
+
+    // GetHashCode: debe ser consistente con Equals
+    public override int GetHashCode()
+    {
+        return Codigo?. GetHashCode() ?? 0;
+    }
+
+    public override string ToString()
+    {
+        return $"{Codigo}:  {Nombre}";
+    }
+}
+
 ProductoCodigo prod1 = new ProductoCodigo("LAP001", "Laptop Dell");
 ProductoCodigo prod2 = new ProductoCodigo("LAP001", "Laptop HP"); // Mismo código
 ProductoCodigo prod3 = new ProductoCodigo("MOU001", "Mouse Logitech");
@@ -5176,6 +8052,43 @@ Console.WriteLine($"¿Hashes iguales? {prod1.GetHashCode() == prod2.GetHashCode(
 ⚠️ **REGLA FUNDAMENTAL**: Si dos objetos son iguales según `Equals`, **deben** tener el mismo `GetHashCode`.
 
 ```csharp
+public class Estudiante : IEquatable<Estudiante>
+{
+    public int Id { get; set; }
+    public string Nombre { get; set; }
+    public double Promedio { get; set; }
+
+    public Estudiante(int id, string nombre, double promedio)
+    {
+        Id = id;
+        Nombre = nombre;
+        Promedio = promedio;
+    }
+
+    // Igualdad por Id
+    public bool Equals(Estudiante other)
+    {
+        if (other == null) return false;
+        return this.Id == other.Id;
+    }
+
+    public override bool Equals(object obj)
+    {
+        return Equals(obj as Estudiante);
+    }
+
+    // GetHashCode basado en Id (consistente con Equals)
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode();
+    }
+
+    public override string ToString()
+    {
+        return $"[{Id}] {Nombre} - {Promedio:F2}";
+    }
+}
+
 Estudiante e1 = new Estudiante(1, "Ana", 8.5);
 Estudiante e2 = new Estudiante(1, "Ana García", 9.0); // Mismo Id
 Estudiante e3 = new Estudiante(2, "Juan", 8.5);
@@ -5229,6 +8142,42 @@ Console.WriteLine($"Primer punto con X > 4: {encontrado}");
 **Ejemplos prácticos:**
 
 ```csharp
+public class Cliente : IEquatable<Cliente>
+{
+    public string DNI { get; set; }
+    public string Nombre { get; set; }
+    public string Email { get; set; }
+
+    public Cliente(string dni, string nombre, string email)
+    {
+        DNI = dni;
+        Nombre = nombre;
+        Email = email;
+    }
+
+    // Igualdad por DNI
+    public bool Equals(Cliente other)
+    {
+        if (other == null) return false;
+        return this.DNI == other.DNI;
+    }
+
+    public override bool Equals(object obj)
+    {
+        return Equals(obj as Cliente);
+    }
+
+    public override int GetHashCode()
+    {
+        return DNI?. GetHashCode() ?? 0;
+    }
+
+    public override string ToString()
+    {
+        return $"{DNI} - {Nombre} ({Email})";
+    }
+}
+
 Cliente[] clientes = new Cliente[]
 {
     new Cliente("12345678A", "Juan Pérez", "juan@email.com"),
@@ -5360,7 +8309,7 @@ int[] numeros = { 1, -5, 3, -2, 8, -9, 4 };
 Console.WriteLine($"Original: [{string.Join(", ", numeros)}]");
 
 // Ordenar por valor absoluto
-var comparadorAbsoluto = Comparer<int>.Create((x, y) =>
+var comparadorAbsoluto = Comparer<int>.Create((x, y) => 
     Math.Abs(x).CompareTo(Math.Abs(y)));
 
 Array.Sort(numeros, comparadorAbsoluto);
@@ -5417,35 +8366,54 @@ Console.WriteLine($"Después: [{string.Join(", ", numeros)}]");
 **Uso directo de `Comparison<T>` delegate:**
 
 ```csharp
-Archivo[] archivos = new Archivo[]
+public class Archivo
 {
-    new Archivo("documento.pdf", 512000, new DateTime(2024, 3, 15)),
-    new Archivo("foto.jpg", 2048000, new DateTime(2024, 1, 20)),
-    new Archivo("video.mp4", 10240000, new DateTime(2024, 5, 10)),
-    new Archivo("audio. mp3", 3072000, new DateTime(2024, 2, 5))
-};
+    public string Nombre { get; set; }
+    public long TamañoBytes { get; set; }
+    public DateTime FechaModificacion { get; set; }
 
-Console. WriteLine("=== Archivos originales ===");
-MostrarArchivos(archivos);
+    public Archivo(string nombre, long tamaño, DateTime fecha)
+    {
+        Nombre = nombre;
+        TamañoBytes = tamaño;
+        FechaModificacion = fecha;
+    }
 
-// Ordenar por tamaño (lambda directa)
-Array.Sort(archivos, (a1, a2) => a1.TamañoBytes.CompareTo(a2.TamañoBytes));
-Console.WriteLine("\n=== Ordenado por tamaño ===");
-MostrarArchivos(archivos);
+    public override string ToString()
+    {
+        return $"{Nombre} ({TamañoBytes / 1024}KB) - {FechaModificacion:dd/MM/yyyy}";
+    }
+}
 
-// Ordenar por fecha (lambda directa)
-Array.Sort(archivos, (a1, a2) => a1.FechaModificacion.CompareTo(a2.FechaModificacion));
-Console.WriteLine("\n=== Ordenado por fecha de modificación ===");
-```markdown
+        Archivo[] archivos = new Archivo[]
+        {
+            new Archivo("documento.pdf", 512000, new DateTime(2024, 3, 15)),
+            new Archivo("foto.jpg", 2048000, new DateTime(2024, 1, 20)),
+            new Archivo("video.mp4", 10240000, new DateTime(2024, 5, 10)),
+            new Archivo("audio. mp3", 3072000, new DateTime(2024, 2, 5))
+        };
+
+        Console. WriteLine("=== Archivos originales ===");
+        MostrarArchivos(archivos);
+
+        // Ordenar por tamaño (lambda directa)
+        Array.Sort(archivos, (a1, a2) => a1.TamañoBytes.CompareTo(a2.TamañoBytes));
+        Console.WriteLine("\n=== Ordenado por tamaño ===");
+        MostrarArchivos(archivos);
+
+        // Ordenar por fecha (lambda directa)
+        Array.Sort(archivos, (a1, a2) => a1.FechaModificacion.CompareTo(a2.FechaModificacion));
+        Console.WriteLine("\n=== Ordenado por fecha de modificación ===");
+        ```markdown
 FechaModificacion));
-Console.WriteLine("\n=== Ordenado por fecha ===");
-MostrarArchivos(archivos);
+        Console.WriteLine("\n=== Ordenado por fecha ===");
+        MostrarArchivos(archivos);
 
-// Ordenar por nombre (lambda directa, case-insensitive)
-Array.Sort(archivos, (a1, a2) =>
-    string.Compare(a1.Nombre, a2.Nombre, StringComparison.OrdinalIgnoreCase));
-Console.WriteLine("\n=== Ordenado por nombre ===");
-MostrarArchivos(archivos);
+        // Ordenar por nombre (lambda directa, case-insensitive)
+        Array.Sort(archivos, (a1, a2) => 
+            string.Compare(a1.Nombre, a2.Nombre, StringComparison.OrdinalIgnoreCase));
+        Console.WriteLine("\n=== Ordenado por nombre ===");
+        MostrarArchivos(archivos);
 
 void MostrarArchivos(Archivo[] archivos)
 {
@@ -5459,6 +8427,27 @@ void MostrarArchivos(Archivo[] archivos)
 **Ejemplos avanzados:**
 
 ```csharp
+public class Transaccion
+{
+    public int Id { get; set; }
+    public string Tipo { get; set; } // "Ingreso" o "Egreso"
+    public decimal Monto { get; set; }
+    public DateTime Fecha { get; set; }
+
+    public Transaccion(int id, string tipo, decimal monto, DateTime fecha)
+    {
+        Id = id;
+        Tipo = tipo;
+        Monto = monto;
+        Fecha = fecha;
+    }
+
+    public override string ToString()
+    {
+        return $"[{Id}] {Tipo}:  ${Monto:F2} - {Fecha:dd/MM/yyyy}";
+    }
+}
+
 Transaccion[] transacciones = new Transaccion[]
 {
     new Transaccion(1, "Ingreso", 1000, new DateTime(2024, 3, 15)),
@@ -5523,7 +8512,7 @@ Console.WriteLine($"Después: [{string.Join(", ", numeros)}]");
 
 ```csharp
 // Simular datos con encabezado y pie
-string[] datos =
+string[] datos = 
 {
     "=== ENCABEZADO ===",
     "Registro 5",
@@ -5557,6 +8546,25 @@ foreach (var linea in datos)
 Una ordenación es **estable** si mantiene el orden relativo de elementos iguales según el criterio de ordenación. 
 
 ```csharp
+public class Producto
+{
+    public string Categoria { get; set; }
+    public string Nombre { get; set; }
+    public int Id { get; set; }
+
+    public Producto(string categoria, string nombre, int id)
+    {
+        Categoria = categoria;
+        Nombre = nombre;
+        Id = id;
+    }
+
+    public override string ToString()
+    {
+        return $"[{Id}] {Categoria} - {Nombre}";
+    }
+}
+
 Producto[] productos = new Producto[]
 {
     new Producto("Electrónica", "Laptop", 1),
@@ -5617,19 +8625,6 @@ foreach (int tamaño in tamaños)
     sw.Stop();
 
     Console. WriteLine($"Ordenar {tamaño: N0} elementos: {sw. ElapsedMilliseconds}ms");
-}
-
-int[] GenerarArrayAleatorio(int tamaño)
-{
-    Random random = new Random();
-    int[] array = new int[tamaño];
-
-    for (int i = 0; i < tamaño; i++)
-    {
-        array[i] = random.Next(1, 1000000);
-    }
-
-    return array;
 }
 ```
 
@@ -5763,6 +8758,43 @@ else
 **Ejemplo con tipos personalizados:**
 
 ```csharp
+public class Empleado :  IComparable<Empleado>
+{
+    public int Id { get; set; }
+    public string Nombre { get; set; }
+    public decimal Salario { get; set; }
+
+    public Empleado(int id, string nombre, decimal salario)
+    {
+        Id = id;
+        Nombre = nombre;
+        Salario = salario;
+    }
+
+    // Orden natural: por Id
+    public int CompareTo(Empleado other)
+    {
+        if (other == null) return 1;
+        return this.Id.CompareTo(other.Id);
+    }
+
+    public override string ToString()
+    {
+        return $"[{Id}] {Nombre} - ${Salario:F0}";
+    }
+}
+public class ComparadorPorSalario : IComparer<Empleado>
+{
+    public int Compare(Empleado x, Empleado y)
+    {
+        if (x == null && y == null) return 0;
+        if (x == null) return -1;
+        if (y == null) return 1;
+
+        return x.Salario.CompareTo(y.Salario);
+    }
+}
+
 Empleado[] empleados = new Empleado[]
 {
     new Empleado(5, "Ana", 45000),
@@ -5943,6 +8975,91 @@ public class ComparadorColorPorMatiz : IComparer<Color>
 **Consistencia entre `CompareTo`, `Equals` y operadores:**
 
 ```csharp
+public class Version : IComparable<Version>, IEquatable<Version>
+{
+    public int Mayor { get; set; }
+    public int Menor { get; set; }
+    public int Parche { get; set; }
+
+    public Version(int mayor, int menor, int parche)
+    {
+        Mayor = mayor;
+        Menor = menor;
+        Parche = parche;
+    }
+
+    // CompareTo
+    public int CompareTo(Version other)
+    {
+        if (other == null) return 1;
+
+        int comparacionMayor = this.Mayor.CompareTo(other.Mayor);
+        if (comparacionMayor != 0) return comparacionMayor;
+
+        int comparacionMenor = this.Menor. CompareTo(other.Menor);
+        if (comparacionMenor != 0) return comparacionMenor;
+
+        return this.Parche. CompareTo(other.Parche);
+    }
+
+    // Equals (consistente con CompareTo)
+    public bool Equals(Version other)
+    {
+        if (other == null) return false;
+        return this.CompareTo(other) == 0;
+    }
+
+    public override bool Equals(object obj)
+    {
+        return Equals(obj as Version);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Mayor, Menor, Parche);
+    }
+
+    // Operadores (consistentes con CompareTo)
+    public static bool operator ==(Version v1, Version v2)
+    {
+        if (ReferenceEquals(v1, v2)) return true;
+        if (ReferenceEquals(v1, null) || ReferenceEquals(v2, null)) return false;
+        return v1.Equals(v2);
+    }
+
+    public static bool operator !=(Version v1, Version v2)
+    {
+        return !(v1 == v2);
+    }
+
+    public static bool operator <(Version v1, Version v2)
+    {
+        if (v1 == null) throw new ArgumentNullException(nameof(v1));
+        return v1.CompareTo(v2) < 0;
+    }
+
+    public static bool operator >(Version v1, Version v2)
+    {
+        if (v1 == null) throw new ArgumentNullException(nameof(v1));
+        return v1.CompareTo(v2) > 0;
+    }
+
+    public static bool operator <=(Version v1, Version v2)
+    {
+        return v1 < v2 || v1 == v2;
+    }
+
+    public static bool operator >=(Version v1, Version v2)
+    {
+        return v1 > v2 || v1 == v2;
+    }
+
+    public override string ToString()
+    {
+        return $"{Mayor}.{Menor}.{Parche}";
+    }
+}
+
 Version v1 = new Version(1, 2, 3);
 Version v2 = new Version(1, 2, 3);
 Version v3 = new Version(2, 0, 0);
@@ -5954,7 +9071,7 @@ Console.WriteLine($"v1.Equals(v2): {v1.Equals(v2)}"); // True
 Console.WriteLine($"v1.CompareTo(v3): {v1.CompareTo(v3)}"); // Negativo
 
 // Ordenar versiones
-Version[] versiones =
+Version[] versiones = 
 {
     new Version(2, 1, 0),
     new Version(1, 0, 5),
@@ -6249,6 +9366,31 @@ foreach (int n in numeros)
 using System;
 using System.Collections.Generic;
 
+public class ProcesadorNumeros
+{
+    // Datos internos (una colección simple)
+    private int[] _datos = [10, 21, 32, 43, 54, 65, 76, 87, 98];
+
+    // Método que utiliza yield return para crear un iterador "on the fly"
+    // Esto permite procesar datos sin cargarlos todos en una nueva lista (Evaluación Perezosa)
+    public IEnumerable<int> ObtenerParesMayoresQue(int umbral)
+    {
+        Console.WriteLine($"--- Iniciando iteración con umbral: {umbral} ---");
+
+        foreach (int numero in _datos)
+        {
+            // Solo "devolvemos" el dato si cumple la condición
+            if (numero > umbral && numero % 2 == 0)
+            {
+                // yield return pausa la ejecución y devuelve el valor al foreach externo
+                yield return numero;
+            }
+        }
+
+        Console.WriteLine("--- Fin de la iteración ---");
+    }
+}
+
 ProcesadorNumeros procesador = new();
 
 // El CCEE d pide usar iteradores para recorrer elementos
@@ -6334,7 +9476,7 @@ listaConGenericos.Add(2);
 
 int numero2 = listaConGenericos[0]; // Sin unboxing ni cast
 
-// Ventajas:
+// Ventajas: 
 // 1. Type-safety (errores en compilación, no en ejecución)
 // 2. Sin boxing/unboxing (mejor rendimiento)
 // 3. Código más limpio (sin casts)
@@ -6597,9 +9739,9 @@ foreach (int numero in numeros)
 **Eliminar elementos:**
 
 ```csharp
-List<string> colores = new List<string>
-{
-    "Rojo", "Verde", "Azul", "Amarillo", "Verde", "Naranja"
+List<string> colores = new List<string> 
+{ 
+    "Rojo", "Verde", "Azul", "Amarillo", "Verde", "Naranja" 
 };
 
 Console.WriteLine("Lista original:");
@@ -6698,6 +9840,27 @@ Console.WriteLine($"¿Todos son positivos? {todosPositivos}");
 **Ejemplo con objetos personalizados:**
 
 ```csharp
+public class Producto
+{
+    public int Id { get; set; }
+    public string Nombre { get; set; }
+    public decimal Precio { get; set; }
+    public string Categoria { get; set; }
+
+    public Producto(int id, string nombre, decimal precio, string categoria)
+    {
+        Id = id;
+        Nombre = nombre;
+        Precio = precio;
+        Categoria = categoria;
+    }
+
+    public override string ToString()
+    {
+        return $"{Nombre} (${Precio}) - {Categoria}";
+    }
+}
+
 List<Producto> productos = new List<Producto>
 {
     new Producto(1, "Laptop", 1200, "Electrónica"),
@@ -6769,6 +9932,25 @@ Console.WriteLine($"Sort descendente: [{string.Join(", ", numeros)}]");
 **Ordenación de objetos personalizados:**
 
 ```csharp
+public class Estudiante
+{
+    public string Nombre { get; set; }
+    public double Promedio { get; set; }
+    public int Edad { get; set; }
+
+    public Estudiante(string nombre, double promedio, int edad)
+    {
+        Nombre = nombre;
+        Promedio = promedio;
+        Edad = edad;
+    }
+
+    public override string ToString()
+    {
+        return $"{Nombre} - Promedio: {Promedio: F2} - {Edad} años";
+    }
+}
+
 List<Estudiante> estudiantes = new List<Estudiante>
 {
     new Estudiante("Ana", 8.5, 20),
@@ -6859,6 +10041,17 @@ Console.WriteLine($"Copia 3:  [{string.Join(", ", copia3)}]");
 **Nota sobre copia profunda:**
 
 ```csharp
+public class Persona
+{
+    public string Nombre { get; set; }
+    public int Edad { get; set; }
+
+    public override string ToString()
+    {
+        return $"{Nombre} ({Edad})";
+    }
+}
+
 List<Persona> original = new List<Persona>
 {
     new Persona { Nombre = "Ana", Edad = 25 },
@@ -6889,10 +10082,10 @@ foreach (var p in copiaSuperficial)
 List<Persona> copiaProfunda = new List<Persona>();
 foreach (var persona in original)
 {
-    copiaProfunda.Add(new Persona
-    {
-        Nombre = persona.Nombre,
-        Edad = persona.Edad
+    copiaProfunda.Add(new Persona 
+    { 
+        Nombre = persona.Nombre, 
+        Edad = persona.Edad 
     });
 }
 
@@ -6926,7 +10119,7 @@ for (int i = 1; i <= 10; i++)
 }
 
 // Capacity crece automáticamente (duplicándose)
-// 0 → 4 → 8 → 16 → ...
+// 0 → 4 → 8 → 16 → ... 
 ```
 
 **TrimExcess:**
@@ -7031,7 +10224,7 @@ Dictionary<string, int> dict5 = new()
 };
 
 // 6. Desde otra colección (ej: array de KeyValuePair)
-KeyValuePair<string, int>[] pares =
+KeyValuePair<string, int>[] pares = 
 {
     new KeyValuePair<string, int>("a", 1),
     new KeyValuePair<string, int>("b", 2)
@@ -7377,42 +10570,6 @@ BuscarPalabra(indice, "programación");
 BuscarPalabra(indice, "C#");
 BuscarPalabra(indice, "Java");
 
-Dictionary<string, List<int>> CrearIndiceInvertido(Dictionary<int, string> documentos)
-{
-    Dictionary<string, List<int>> indice = new Dictionary<string, List<int>>();
-
-    foreach (var doc in documentos)
-    {
-        int idDocumento = doc.Key;
-        string[] palabras = doc.Value.ToLower().Split(' ');
-
-        foreach (string palabra in palabras)
-        {
-            // Limpiar palabra (quitar puntuación)
-            string palabraLimpia = new string(palabra.Where(char.IsLetterOrDigit).ToArray());
-
-            if (string.IsNullOrEmpty(palabraLimpia))
-            {
-                continue;
-            }
-
-            // Agregar documento al índice de esta palabra
-            if (indice.ContainsKey(palabraLimpia))
-            {
-                if (!indice[palabraLimpia].Contains(idDocumento))
-                {
-                    indice[palabraLimpia]. Add(idDocumento);
-                }
-            }
-            else
-            {
-                indice[palabraLimpia] = new List<int> { idDocumento };
-            }
-        }
-    }
-
-    return indice;
-}
 void BuscarPalabra(Dictionary<string, List<int>> indice, string palabra)
 {
     string palabraBuscar = palabra.ToLower();
@@ -7465,6 +10622,40 @@ Console.WriteLine($"\n¿Contiene 'HOLA'? {existe}"); // True
 Si usamos objetos personalizados como claves en un Dictionary<K, V>, la colección necesita una forma de identificar si un objeto es único. El método `GetHashCode()` debe generar una "huella digital" coherente y que `Equals()` compare correctamente los valores. Sin esto, la colección no podrá recuperar o filtrar la información de forma fiable, tratando objetos con los mismos datos como si fueran diferentes.
 
 ```csharp
+public class Coordenada :  IEquatable<Coordenada>
+{
+    public int X { get; set; }
+    public int Y { get; set; }
+
+    public Coordenada(int x, int y)
+    {
+        X = x;
+        Y = y;
+    }
+
+    // IMPORTANTE: Implementar Equals y GetHashCode
+    public bool Equals(Coordenada other)
+    {
+        if (other == null) return false;
+        return X == other.X && Y == other.Y;
+    }
+
+    public override bool Equals(object obj)
+    {
+        return Equals(obj as Coordenada);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(X, Y);
+    }
+
+    public override string ToString()
+    {
+        return $"({X}, {Y})";
+    }
+}
+
 Dictionary<Coordenada, string> mapa = new Dictionary<Coordenada, string>();
 
 // Agregar ubicaciones
@@ -7657,7 +10848,7 @@ bool tienenComunes2 = conjuntoA.Overlaps(conjuntoC);
 Console.WriteLine($"A y B tienen elementos en común: {tienenComunes1}"); // True
 Console.WriteLine($"A y C tienen elementos en común: {tienenComunes2}"); // False
 
-// SetEquals: ¿son iguales?
+// SetEquals: ¿son iguales? 
 bool sonIguales1 = conjuntoA.SetEquals(conjuntoD);
 bool sonIguales2 = conjuntoA. SetEquals(conjuntoB);
 Console.WriteLine($"A y D son iguales:  {sonIguales1}"); // True
@@ -7669,9 +10860,9 @@ Console.WriteLine($"A y B son iguales: {sonIguales2}"); // False
 **Eliminar duplicados:**
 
 ```csharp
-List<int> numerosConDuplicados = new List<int>
-{
-    1, 2, 3, 2, 4, 1, 5, 3, 6, 4, 2
+List<int> numerosConDuplicados = new List<int> 
+{ 
+    1, 2, 3, 2, 4, 1, 5, 3, 6, 4, 2 
 };
 
 Console.WriteLine($"Lista original: [{string.Join(", ", numerosConDuplicados)}]");
@@ -7691,14 +10882,14 @@ Console.WriteLine($"\nDe vuelta a lista: [{string. Join(", ", listaSinDuplicados
 **Encontrar elementos comunes y diferentes:**
 
 ```csharp
-List<string> cursosEstudiante1 = new List<string>
-{
-    "Matemáticas", "Física", "Química", "Historia"
+List<string> cursosEstudiante1 = new List<string> 
+{ 
+    "Matemáticas", "Física", "Química", "Historia" 
 };
 
-List<string> cursosEstudiante2 = new List<string>
-{
-    "Física", "Biología", "Historia", "Arte"
+List<string> cursosEstudiante2 = new List<string> 
+{ 
+    "Física", "Biología", "Historia", "Arte" 
 };
 
 HashSet<string> cursos1 = new HashSet<string>(cursosEstudiante1);
@@ -7739,7 +10930,7 @@ foreach (string curso in todosCursos)
 
 ```csharp
 // Simular log de visitas (IP addresses)
-string[] logVisitas =
+string[] logVisitas = 
 {
     "192.168.1.1",
     "192.168.1.2",
@@ -7837,6 +11028,25 @@ Console.WriteLine($"\nDespués de Clear: {cola.Count} elementos");
 **Sistema de procesamiento de tareas:**
 
 ```csharp
+public class Tarea
+{
+    public int Id { get; set; }
+    public string Descripcion { get; set; }
+    public DateTime HoraCreacion { get; set; }
+
+    public Tarea(int id, string descripcion)
+    {
+        Id = id;
+        Descripcion = descripcion;
+        HoraCreacion = DateTime.Now;
+    }
+
+    public override string ToString()
+    {
+        return $"[Tarea {Id}] {Descripcion} (creada a las {HoraCreacion: HH:mm: ss})";
+    }
+}
+
 SistemaTareas sistema = new SistemaTareas();
 
 // Agregar tareas
@@ -7872,6 +11082,25 @@ while (true)
 **Simulación de atención al cliente:**
 
 ```csharp
+public class Cliente
+{
+    public string Nombre { get; set; }
+    public int NumeroTicket { get; set; }
+    public DateTime HoraLlegada { get; set; }
+
+    public Cliente(string nombre, int numeroTicket)
+    {
+        Nombre = nombre;
+        NumeroTicket = numeroTicket;
+        HoraLlegada = DateTime.Now;
+    }
+
+    public override string ToString()
+    {
+        return $"Ticket #{NumeroTicket}:  {Nombre}";
+    }
+}
+
 Queue<Cliente> colaAtencion = new Queue<Cliente>();
 int siguienteTicket = 1;
 
@@ -8003,7 +11232,7 @@ nav.Adelante(); // No hay páginas adelante
 **Verificar paréntesis balanceados:**
 
 ```csharp
-string[] expresiones =
+string[] expresiones = 
 {
     "(a + b)",
     "((a + b) * c)",
@@ -8057,11 +11286,63 @@ bool VerificarBalance(string expresion)
     // Debe quedar vacía (todos los abiertos tienen su cierre)
     return pila.Count == 0;
 }
+```csharp
+class Program
+{
+    static void Main()
+    {
+        SortedSet<int> numeros = new SortedSet<int>();
+        
+        // Agregar elementos (se mantienen ordenados automáticamente)
+        numeros.Add(5);
+        numeros.Add(2);
+        numeros.Add(8);
+        numeros.Add(1);
+        numeros.Add(9);
+        numeros.Add(3);
+        
+        Console.WriteLine("Elementos (ordenados automáticamente):");
+        foreach (int n in numeros)
+        {
+            Console.Write($"{n} ");
+        }
+        Console.WriteLine();
+        
+        // Min y Max
+        int minimo = numeros.Min;
+        int maximo = numeros.Max;
+        Console.WriteLine($"\nMínimo: {minimo}");
+        Console.WriteLine($"Máximo: {maximo}");
+        
+        // GetViewBetween:  obtener subconjunto
+        SortedSet<int> rango = numeros.GetViewBetween(3, 8);
+        Console.WriteLine($"\nRango [3, 8]: [{string.Join(", ", rango)}]");
+        
+        // Reverse: iterar en orden inverso
+        Console.WriteLine("\nOrden inverso:");
+        foreach (int n in numeros.Reverse())
+        {
+            Console.Write($"{n} ");
+        }
+        Console.WriteLine();
+    }
+}
 ```
 
 #### 5.7.3. Con Comparador Personalizado
 
 ```csharp
+public class Persona
+{
+    public string Nombre { get; set; }
+    public int Edad { get; set; }
+
+    public override string ToString()
+    {
+        return $"{Nombre} ({Edad})";
+    }
+}
+
 // Ordenar por edad
 var comparadorEdad = Comparer<Persona>.Create((p1, p2) => p1.Edad.CompareTo(p2.Edad));
 SortedSet<Persona> personasPorEdad = new SortedSet<Persona>(comparadorEdad);
@@ -8514,6 +11795,24 @@ Console. WriteLine();
 **Exponer colecciones desde clases sin permitir modificación externa:**
 
 ```csharp
+public class Biblioteca
+{
+    private List<string> libros = new List<string>();
+
+    // Exponer como solo lectura
+    public IReadOnlyList<string> Libros => libros.AsReadOnly();
+
+    public void AgregarLibro(string titulo)
+    {
+        libros.Add(titulo);
+    }
+
+    public bool EliminarLibro(string titulo)
+    {
+        return libros.Remove(titulo);
+    }
+}
+
 Biblioteca biblioteca = new Biblioteca();
 biblioteca.AgregarLibro("El Quijote");
 biblioteca.AgregarLibro("Cien Años de Soledad");
@@ -8977,7 +12276,7 @@ foreach (var par in dict)
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
-string[] documentos =
+string[] documentos = 
 {
     "el gato come pescado",
     "el perro come carne",
@@ -9566,22 +12865,28 @@ La **localización** y el **formateo** permiten que las aplicaciones se adapten 
 ```csharp
 using System.Globalization;
 
-// Cultura actual del sistema
-CultureInfo culturaActual = CultureInfo. CurrentCulture;
-Console.WriteLine($"Cultura actual: {culturaActual.Name}");
-Console.WriteLine($"Nombre en inglés: {culturaActual. EnglishName}");
-Console.WriteLine($"Nombre nativo: {culturaActual. NativeName}");
-
-// Crear culturas específicas
-CultureInfo culturaEspañola = new CultureInfo("es-ES"); // España
-CultureInfo culturaMexicana = new CultureInfo("es-MX"); // México
-CultureInfo culturaUSA = new CultureInfo("en-US"); // Estados Unidos
-CultureInfo culturaFrancia = new CultureInfo("fr-FR"); // Francia
-
-Console.WriteLine($"\nEspaña: {culturaEspañola.DisplayName}");
-Console.WriteLine($"México: {culturaMexicana. DisplayName}");
-Console.WriteLine($"USA: {culturaUSA.DisplayName}");
-Console.WriteLine($"Francia: {culturaFrancia. DisplayName}");
+class Program
+{
+    static void Main()
+    {
+        // Cultura actual del sistema
+        CultureInfo culturaActual = CultureInfo. CurrentCulture;
+        Console.WriteLine($"Cultura actual: {culturaActual.Name}");
+        Console.WriteLine($"Nombre en inglés: {culturaActual. EnglishName}");
+        Console.WriteLine($"Nombre nativo: {culturaActual. NativeName}");
+        
+        // Crear culturas específicas
+        CultureInfo culturaEspañola = new CultureInfo("es-ES"); // España
+        CultureInfo culturaMexicana = new CultureInfo("es-MX"); // México
+        CultureInfo culturaUSA = new CultureInfo("en-US"); // Estados Unidos
+        CultureInfo culturaFrancia = new CultureInfo("fr-FR"); // Francia
+        
+        Console.WriteLine($"\nEspaña: {culturaEspañola.DisplayName}");
+        Console.WriteLine($"México: {culturaMexicana. DisplayName}");
+        Console.WriteLine($"USA: {culturaUSA.DisplayName}");
+        Console.WriteLine($"Francia: {culturaFrancia. DisplayName}");
+    }
+}
 ```
 
 ### 6.3. Formateo de Números
@@ -9647,6 +12952,31 @@ Console.WriteLine($"USA:    {fecha.ToString("T", en)}");
 
 ```csharp
 using System.Globalization;
+
+public static class ExtensionesFormateo
+{
+    public static string ToLocalDate(this DateTime fecha)
+    {
+        return fecha. ToString("d", CultureInfo. CurrentCulture);
+    }
+
+    public static string ToLocalMoney(this decimal cantidad)
+    {
+        return cantidad.ToString("C", CultureInfo.CurrentCulture);
+    }
+
+    public static string ToSpanishDate(this DateTime fecha)
+    {
+        CultureInfo spanish = new CultureInfo("es-ES");
+        return fecha.ToString("D", spanish);
+    }
+
+    public static string ToEuroMoney(this decimal cantidad)
+    {
+        CultureInfo spanish = new CultureInfo("es-ES");
+        return cantidad.ToString("C", spanish);
+    }
+}
 
 DateTime hoy = DateTime.Now;
 decimal precio = 1234.56m;
