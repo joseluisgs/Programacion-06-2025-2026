@@ -348,7 +348,7 @@ public class CajaDeEnteros
 
     public CajaDeEnteros(int valor)
     {
-        this. valor = valor;
+        this.valor = valor;
     }
 
     public int ObtenerValor()
@@ -395,7 +395,7 @@ Ahora puedes usar esta clase con cualquier tipo:
 
 ```csharp
 Caja<int> cajaEntero = new Caja<int>(42);
-int numeroGuardado = cajaEntero. ObtenerValor(); // 42
+int numeroGuardado = cajaEntero.ObtenerValor(); // 42
 
 Caja<string> cajaTexto = new Caja<string>("Hola");
 string textoGuardado = cajaTexto.ObtenerValor(); // "Hola"
@@ -405,7 +405,7 @@ Persona personaGuardada = cajaPersona.ObtenerValor();
 
 ```
 
-La letra `T` es un **parámetro de tipo** (type parameter). Es como una variable, pero para tipos en lugar de valores.  Por convención, se suele usar `T` (de "Type"), aunque puedes usar cualquier identificador válido.
+La letra `T` es un **parámetro de tipo** (type parameter). Es como una variable, pero para tipos en lugar de valores.Por convención, se suele usar `T` (de "Type"), aunque puedes usar cualquier identificador válido.
 
 #### 2.1.2. Ventajas:  reutilización, type-safety, rendimiento
 
@@ -459,7 +459,7 @@ public class CajaSinGenericos
 // Uso:  propenso a errores
 CajaSinGenericos caja = new CajaSinGenericos(42);
 string texto = (string)caja.ObtenerValor(); // ¡ERROR en tiempo de ejecución!
-// InvalidCastException: Unable to cast object of type 'System.Int32' to type 'System. String'
+// InvalidCastException: Unable to cast object of type 'System.Int32' to type 'System.String'
 
 ```
 
@@ -553,7 +553,7 @@ Console.WriteLine($"Mejora: {sw1.ElapsedMilliseconds / (double)sw2.ElapsedMillis
 
 #### 2.1.3. Historia y evolución en C#
 
-Los genéricos se introdujeron en **C# 2.0** (2005) junto con . NET Framework 2.0. Antes de esto, los desarrolladores tenían que elegir entre:
+Los genéricos se introdujeron en **C# 2.0** (2005) junto con .NET Framework 2.0. Antes de esto, los desarrolladores tenían que elegir entre:
 
 1. **Duplicar código** para cada tipo
 2. **Usar `object`** y perder type-safety y rendimiento
@@ -626,7 +626,7 @@ public class Caja<T>
     // Método que muestra información (T. ToString() siempre está disponible)
     public void MostrarInfo()
     {
-        Console. WriteLine($"La caja contiene: {contenido}");
+        Console.WriteLine($"La caja contiene: {contenido}");
         Console.WriteLine($"Tipo del contenido: {typeof(T).Name}");
     }
 }
@@ -672,7 +672,7 @@ cajaPersona.MostrarInfo();
 // La caja contiene:  Persona:  Ana (25 años)
 // Tipo del contenido: Persona
 
-Persona personaExtraida = cajaPersona. ObtenerContenido();
+Persona personaExtraida = cajaPersona.ObtenerContenido();
 Console.WriteLine($"Persona extraída: {personaExtraida.Nombre}"); // Ana
 
 // Clase auxiliar para el ejemplo
@@ -813,7 +813,7 @@ public class ListaEnlazada<T>
             Nodo<T> actual = cabeza;
             while (actual.Siguiente != null)
             {
-                actual = actual. Siguiente;
+                actual = actual.Siguiente;
             }
             actual.Siguiente = nuevoNodo;
         }
@@ -826,8 +826,8 @@ public class ListaEnlazada<T>
         Console.Write("Lista:  ");
         while (actual != null)
         {
-            Console. Write($"{actual.Dato} -> ");
-            actual = actual. Siguiente;
+            Console.Write($"{actual.Dato} -> ");
+            actual = actual.Siguiente;
         }
         Console.WriteLine("null");
     }
@@ -837,7 +837,7 @@ public class ListaEnlazada<T>
         Nodo<T> actual = cabeza;
         while (actual != null)
         {
-            if (actual.Dato. Equals(dato))
+            if (actual.Dato.Equals(dato))
             {
                 return true;
             }
@@ -854,11 +854,11 @@ ListaEnlazada<int> listaNumeros = new ListaEnlazada<int>();
 listaNumeros.AgregarAlFinal(10);
 listaNumeros.AgregarAlFinal(20);
 listaNumeros.AgregarAlInicio(5);
-listaNumeros. Mostrar();
+listaNumeros.Mostrar();
 // Salida: Lista: 5 -> 10 -> 20 -> null
 
-Console.WriteLine($"¿Contiene 20? {listaNumeros. Contiene(20)}"); // True
-Console.WriteLine($"¿Contiene 100? {listaNumeros. Contiene(100)}"); // False
+Console.WriteLine($"¿Contiene 20? {listaNumeros.Contiene(20)}"); // True
+Console.WriteLine($"¿Contiene 100? {listaNumeros.Contiene(100)}"); // False
 
 Console.WriteLine();
 
@@ -867,13 +867,13 @@ ListaEnlazada<string> listaTextos = new ListaEnlazada<string>();
 listaTextos.AgregarAlFinal("Hola");
 listaTextos.AgregarAlFinal("Mundo");
 listaTextos.AgregarAlInicio("¡");
-listaTextos. Mostrar();
+listaTextos.Mostrar();
 // Salida: Lista: ¡ -> Hola -> Mundo -> null
 ```
 
 #### 2.2.3. Parámetros de tipo múltiples
 
-No estamos limitados a usar un solo tipo genérico (T). Podemos manipular información relacionando distintos tipos de datos en un mismo método o clase. Por ejemplo, un método que transforma un tipo en otro o una clase que guarda un par de valores: public `class Pareja<T, U> { ... }`. Esto permite crear estructuras mucho más flexibles para procesar datos complejos sin necesidad de recurrir a la herencia.
+No estamos limitados a usar un solo tipo genérico (T). Podemos manipular información relacionando distintos tipos de datos en un mismo método o clase.Por ejemplo, un método que transforma un tipo en otro o una clase que guarda un par de valores: public `class Pareja<T, U> { ... }`. Esto permite crear estructuras mucho más flexibles para procesar datos complejos sin necesidad de recurrir a la herencia.
 
 ```csharp
 public class NombreClase<T1, T2, T3>
@@ -982,7 +982,7 @@ public class DiccionarioSimple<TKey, TValue>
         // Buscar si la clave ya existe
         for (int i = 0; i < contador; i++)
         {
-            if (entradas[i]. Clave. Equals(clave))
+            if (entradas[i].Clave.Equals(clave))
             {
                 // Actualizar valor existente
                 entradas[i].Valor = valor;
@@ -1004,7 +1004,7 @@ public class DiccionarioSimple<TKey, TValue>
     {
         for (int i = 0; i < contador; i++)
         {
-            if (entradas[i]. Clave.Equals(clave))
+            if (entradas[i].Clave.Equals(clave))
             {
                 return entradas[i].Valor;
             }
@@ -1018,7 +1018,7 @@ public class DiccionarioSimple<TKey, TValue>
         {
             if (entradas[i].Clave.Equals(clave))
             {
-                valor = entradas[i]. Valor;
+                valor = entradas[i].Valor;
                 return true;
             }
         }
@@ -1057,7 +1057,7 @@ string[] palabras = { "hola", "mundo", "hola", "csharp", "mundo", "hola" };
 
 foreach (string palabra in palabras)
 {
-    if (contadorPalabras. TryGetValue(palabra, out int cuenta))
+    if (contadorPalabras.TryGetValue(palabra, out int cuenta))
     {
 contadorPalabras.Agregar(palabra, cuenta + 1);
     }
@@ -1067,7 +1067,7 @@ contadorPalabras.Agregar(palabra, 1);
     }
 }
 
-contadorPalabras. Mostrar();
+contadorPalabras.Mostrar();
 // Salida:
 // Diccionario (3 entradas):
 //   [hola] => 3
@@ -1084,7 +1084,7 @@ codigosEstado.Agregar(500, "Internal Server Error");
 
 codigosEstado.Mostrar();
 
-Console.WriteLine($"\nCódigo 404 significa: {codigosEstado. Obtener(404)}");
+Console.WriteLine($"\nCódigo 404 significa: {codigosEstado.Obtener(404)}");
 ```
 
 #### 2.2.4. Clases genéricas anidadas
@@ -1134,8 +1134,8 @@ public class Coleccion<T>
         private int limite;
         public Iterador(TElemento[] elementos, int limite)
         {
-            this. elementos = elementos;
-            this. posicion = 0;
+            this.elementos = elementos;
+            this.posicion = 0;
             this.limite = limite;
         }
         public bool TieneSiguiente()
@@ -1193,13 +1193,13 @@ Coleccion<string>.Iterador<string> iterador = nombres.ObtenerIterador();
 
 while (iterador.TieneSiguiente())
 {
-    Console. WriteLine($"  - {iterador.Siguiente()}");
+    Console.WriteLine($"  - {iterador.Siguiente()}");
 }
 
 Console.WriteLine("\nReiniciando iterador e iterando de nuevo:");
 iterador.Reiniciar();
 
-while (iterador. TieneSiguiente())
+while (iterador.TieneSiguiente())
 {
     Console.WriteLine($"  - {iterador.Siguiente()}");
 }
@@ -1217,7 +1217,7 @@ Console.WriteLine("Árbol binario:");
 MostrarArbol(raiz, 0);
 
 Console.WriteLine($"\n¿El nodo raíz es hoja? {raiz.EsHoja()}");
-Console.WriteLine($"¿El nodo 3 es hoja? {raiz.Izquierdo. Izquierdo.EsHoja()}");
+Console.WriteLine($"¿El nodo 3 es hoja? {raiz.Izquierdo.Izquierdo.EsHoja()}");
 ```
 
 Salida:
@@ -1292,7 +1292,7 @@ public class UtilidadesGenericas
     // Método genérico que retorna el último elemento de un array
     public static T UltimoElemento<T>(T[] array)
     {
-        if (array == null || array. Length == 0)
+        if (array == null || array.Length == 0)
         {
             throw new ArgumentException("El array no puede estar vacío");
         }
@@ -1306,7 +1306,7 @@ public class UtilidadesGenericas
 int num1 = 10;
 int num2 = 20;
 Console.WriteLine($"Antes: num1={num1}, num2={num2}");
-UtilidadesGenericas. Intercambiar(ref num1, ref num2);
+UtilidadesGenericas.Intercambiar(ref num1, ref num2);
 Console.WriteLine($"Después: num1={num1}, num2={num2}");
 
 Console.WriteLine();
@@ -1314,7 +1314,7 @@ Console.WriteLine();
 // Intercambiar strings
 string texto1 = "Hola";
 string texto2 = "Mundo";
-Console. WriteLine($"Antes: texto1={texto1}, texto2={texto2}");
+Console.WriteLine($"Antes: texto1={texto1}, texto2={texto2}");
 UtilidadesGenericas.Intercambiar(ref texto1, ref texto2);
 Console.WriteLine($"Después: texto1={texto1}, texto2={texto2}");
 
@@ -1358,13 +1358,13 @@ public class UtilidadesInferencia
     // Método genérico que compara dos valores
     public static bool SonIguales<T>(T a, T b)
     {
-        return a. Equals(b);
+        return a.Equals(b);
     }
 }
 
 // Código ejecutable
 // Inferencia de tipos:  el compilador deduce que T es int
-UtilidadesInferencia. Imprimir(42);
+UtilidadesInferencia.Imprimir(42);
 // Equivalente explícito: UtilidadesInferencia.Imprimir<int>(42);
 
 // Inferencia de tipos: el compilador deduce que T es string
@@ -1373,7 +1373,7 @@ UtilidadesInferencia.Imprimir("Hola");
 
 // Crear array con inferencia de tipos
 int[] numeros = UtilidadesInferencia.CrearArray(1, 2, 3);
-// Equivalente explícito: UtilidadesInferencia. CrearArray<int>(1, 2, 3);
+// Equivalente explícito: UtilidadesInferencia.CrearArray<int>(1, 2, 3);
 
 string[] palabras = UtilidadesInferencia.CrearArray("uno", "dos", "tres");
 
@@ -1442,7 +1442,7 @@ public class Utilidades
     {
         for (int i = 0; i < array.Length; i++)
         {
-            if (array[i]. Equals(elementoBuscado))
+            if (array[i].Equals(elementoBuscado))
             {
                 return i;
             }
@@ -1587,7 +1587,7 @@ Console.WriteLine();
 // Concatenar arrays
 int[] array1 = { 1, 2, 3 };
 int[] array2 = { 4, 5, 6 };
-int[] concatenado = OperacionesArray. Concatenar(array1, array2);
+int[] concatenado = OperacionesArray.Concatenar(array1, array2);
 Console.WriteLine($"Concatenado: [{string.Join(", ", concatenado)}]");
 
 Console.WriteLine();
@@ -1635,7 +1635,7 @@ public class Perro : Animal
 {
     public override void HacerSonido()
     {
-        Console. WriteLine("Guau guau");
+        Console.WriteLine("Guau guau");
     }
 }
 
@@ -1708,7 +1708,7 @@ La razón es la seguridad de tipos. Si permitiéramos esto:
 ```csharp
 Caja<Perro> cajaPerro = new Caja<Perro>(new Perro());
 Caja<Animal> cajaAnimal = cajaPerro; // Si esto fuera posible...
-cajaAnimal. Contenido = new Gato();   // ¡Podríamos poner un Gato en una caja de Perros!
+cajaAnimal.Contenido = new Gato();   // ¡Podríamos poner un Gato en una caja de Perros!
 Perro perro = cajaPerro.Contenido;   // ¡ERROR en tiempo de ejecución!
 
 ```
@@ -1826,7 +1826,7 @@ public class Gato : Animal
 {
     public override void HacerSonido()
     {
-        Console. WriteLine("Miau miau");
+        Console.WriteLine("Miau miau");
     }
 }
 
@@ -1886,12 +1886,12 @@ public class RepositorioPerros : IRepositorioLectura<Perro>
 // Funciones locales
 void MostrarAnimales(IRepositorioLectura<Animal> repositorio)
 {
-    Console.WriteLine($"Total de animales: {repositorio. Contar()}");
+    Console.WriteLine($"Total de animales: {repositorio.Contar()}");
 
     Animal[] animales = repositorio.ObtenerTodos();
     foreach (Animal animal in animales)
     {
-        Console.WriteLine($"- {animal. Nombre}");
+        Console.WriteLine($"- {animal.Nombre}");
         animal.HacerSonido();
     }
 }
@@ -1993,7 +1993,7 @@ void UsarFabricaDeMamiferos(IFabrica<Mamifero> fabrica)
 void UsarFabricaDePerros(IFabrica<Perro> fabrica)
 {
     Perro perro = fabrica.Crear("Ejemplo");
-    Console.WriteLine($"Perro creado: {perro. Nombre}");
+    Console.WriteLine($"Perro creado: {perro.Nombre}");
     perro.HacerSonido();
 }
 ```
@@ -2077,11 +2077,11 @@ public class ComparadorAnimales : IComparadorPersonalizado<Animal>
 {
     public int Comparar(Animal x, Animal y)
     {
-        return string.Compare(x.Nombre, y.Nombre, StringComparison. Ordinal);
+        return string.Compare(x.Nombre, y.Nombre, StringComparison.Ordinal);
     }
     public bool SonIguales(Animal x, Animal y)
     {
-        return x. Nombre == y.Nombre;
+        return x.Nombre == y.Nombre;
     }
 }
 
@@ -2107,7 +2107,7 @@ OrdenarPerros(perros, comparadorAnimal); // ✓ Funciona
 Console.WriteLine("\nDespués de ordenar:");
 foreach (Perro p in perros)
 {
-    Console.WriteLine($"- {p. Nombre}");
+    Console.WriteLine($"- {p.Nombre}");
 }
 
 // Funciones locales
@@ -2186,14 +2186,14 @@ public class ValidadorPerro : IValidador<Perro>
     public bool EsValido(Perro perro)
     {
         return ! string.IsNullOrWhiteSpace(perro.Nombre) &&
-               perro. Nombre.Length >= 3 &&
-               perro.Nombre. Length <= 20;
+               perro.Nombre.Length >= 3 &&
+               perro.Nombre.Length <= 20;
     }
     public string ObtenerMensajeError(Perro perro)
     {
         if (string.IsNullOrWhiteSpace(perro.Nombre))
             return "El nombre del perro no puede estar vacío";
-        if (perro. Nombre.Length < 3)
+        if (perro.Nombre.Length < 3)
             return "El nombre del perro debe tener al menos 3 caracteres";
         if (perro.Nombre.Length > 20)
             return "El nombre del perro no puede superar los 20 caracteres";
@@ -2594,7 +2594,7 @@ public class Veterinaria<T> where T : Animal
 // ✓ Funciona:  Perro hereda de Animal
 Veterinaria<Perro> vetPerros = new Veterinaria<Perro>(5);
 vetPerros.RegistrarPaciente(new Perro { Nombre = "Firulais" });
-vetPerros. RegistrarPaciente(new Perro { Nombre = "Rex" });
+vetPerros.RegistrarPaciente(new Perro { Nombre = "Rex" });
 vetPerros.RevisarTodos();
 
 // ✓ Funciona: Gato hereda de Animal
@@ -2662,7 +2662,7 @@ public class Repositorio<T> where T :  IIdentificable
 
     public void Agregar(T item)
     {
-        items. Add(item);
+        items.Add(item);
     }
 
     // Podemos usar métodos de IIdentificable porque T : IIdentificable
@@ -2728,7 +2728,7 @@ public class ContenedorNoNulo<T> where T : notnull
     private T valor;
     public ContenedorNoNulo(T valor)
     {
-        this. valor = valor;
+        this.valor = valor;
     }
     public T Valor
     {
@@ -2738,7 +2738,7 @@ public class ContenedorNoNulo<T> where T : notnull
     public void Mostrar()
     {
         // Seguro:  valor nunca será null
-        Console.WriteLine($"Valor: {valor. ToString()}");
+        Console.WriteLine($"Valor: {valor.ToString()}");
     }
 }
 
@@ -2779,7 +2779,7 @@ public class BufferSeguro<T> where T : unmanaged
     }
     public int TamañoEnBytes()
     {
-        return System.Runtime. InteropServices.Marshal.SizeOf<T>() * buffer.Length;
+        return System.Runtime.InteropServices.Marshal.SizeOf<T>() * buffer.Length;
     }
 }
 struct Punto
@@ -2856,7 +2856,7 @@ public class RepositorioCompleto<T>
         // Podemos usar IDescriptible
         foreach (T item in items)
         {
-            Console. WriteLine($"  [{item.ObtenerIdentificador()}] {item.ObtenerDescripcionCompleta()}");
+            Console.WriteLine($"  [{item.ObtenerIdentificador()}] {item.ObtenerDescripcionCompleta()}");
         }
     }
 }
@@ -2902,7 +2902,7 @@ producto2.Nombre = "Teclado mecánico";
 producto2.Descripcion = "RGB, switches azules";
 producto2.Precio = 120;
 
-repo. Agregar(producto2);
+repo.Agregar(producto2);
 
 Console.WriteLine("=== Productos en el repositorio ===");
 repo.MostrarDescripciones();
@@ -2983,8 +2983,8 @@ ProductoDTO[] productosDTO = new ProductoDTO[]
 // Mapear con configurador personalizado
 ProductoViewModel[] viewModels = mapeador.MapearColeccion(productosDTO, (dto, vm) =>
 {
-    vm. Identificador = dto.ObtenerIdentificador();
-    vm.NombreCompleto = dto. Nombre. ToUpper();
+    vm.Identificador = dto.ObtenerIdentificador();
+    vm.NombreCompleto = dto.Nombre.ToUpper();
     vm.PrecioFormateado = $"${dto.Precio:F2}";
 });
 
@@ -3021,7 +3021,7 @@ public class Conversor<TEntrada, TSalida>
     }
     public TSalida[] ConvertirArray(TEntrada[] valores)
     {
-        TSalida[] resultado = new TSalida[valores. Length];
+        TSalida[] resultado = new TSalida[valores.Length];
         for (int i = 0; i < valores.Length; i++)
         {
             resultado[i] = Convertir(valores[i]);
@@ -3057,12 +3057,12 @@ Console.WriteLine($"Strings convertidos a ints: [{string.Join(", ", numeros)}]")
 // Intentar convertir de forma segura
 if (conversor2.TryConvertir("123", out int valor))
 {
-    Console. WriteLine($"Conversión exitosa: {valor}");
+    Console.WriteLine($"Conversión exitosa: {valor}");
 }
 
 if (! conversor2.TryConvertir("abc", out int valor2))
 {
-    Console. WriteLine("Conversión fallida para 'abc'");
+    Console.WriteLine("Conversión fallida para 'abc'");
 }
 ```
 
@@ -3261,7 +3261,7 @@ numero = 42;
 
 if (numero.HasValue)
 {
-    Console.WriteLine($"El número tiene valor: {numero. Value}");
+    Console.WriteLine($"El número tiene valor: {numero.Value}");
     Console.WriteLine($"También puedes acceder así: {numero}");
 }
 
@@ -3359,7 +3359,7 @@ bool? and2 = booleano1 & booleano3; // null
 bool? or1 = booleano1 | booleano2;  // true
 bool? or2 = booleano2 | booleano3;  // null
 
-Console. WriteLine($"true & false = {and1}");
+Console.WriteLine($"true & false = {and1}");
 Console.WriteLine($"true & null = {and2 ?? false}");
 Console.WriteLine($"true | false = {or1}");
 Console.WriteLine($"false | null = {or2 ??  false}");
@@ -3431,7 +3431,7 @@ Console.WriteLine($"Búsqueda mayor que 100: {resultado2 ?? -1}");
 
 // Usar con operador ??
 int valor = buscador.BuscarMayorQue(15) ?? 0;
-Console. WriteLine($"Valor encontrado o 0: {valor}");
+Console.WriteLine($"Valor encontrado o 0: {valor}");
 ```
 
 ## 3. Programación Funcional en C#
@@ -3616,7 +3616,7 @@ Persona persona = new Persona { Nombre = "Ana", Edad = 25 };
 Console.WriteLine($"{persona.Nombre} tiene {persona.Edad} años");
 
 persona.CumplirAños(); // Muta el objeto
-Console.WriteLine($"{persona.Nombre} tiene {persona. Edad} años");
+Console.WriteLine($"{persona.Nombre} tiene {persona.Edad} años");
 
 // Problema: el objeto original cambió
 ```
@@ -3763,7 +3763,7 @@ int GenerarAleatorioImpura()
 // ✓ FUNCIÓN MÁS PURA: recibe el generador como parámetro
 int GenerarAleatorioPura(Random random)
 {
-    return random. Next(1, 100);
+    return random.Next(1, 100);
 }
 ```
 
@@ -4054,7 +4054,7 @@ void ProcesarProductos(Producto[] productos, Validador<Producto> validador)
     {
         if (validador(producto, out string error))
         {
-            Console. WriteLine($"✓ Producto válido: {producto.Nombre}");
+            Console.WriteLine($"✓ Producto válido: {producto.Nombre}");
         }
         else
         {
@@ -4186,7 +4186,7 @@ void ProcesarNumeros(int[] numeros, Action<int, int> accion)
 Func<int> obtenerNumeroAleatorio = () =>
 {
     Random random = new Random();
-    return random. Next(1, 100);
+    return random.Next(1, 100);
 };
 Console.WriteLine($"Número aleatorio: {obtenerNumeroAleatorio()}");
 
@@ -4201,7 +4201,7 @@ Console.WriteLine($"5 + 3 = {sumar(5, 3)}"); // 8
 
 // Func con 2 parámetros, retorna string
 Func<string, string, string> concatenar = (a, b) => $"{a} {b}";
-Console. WriteLine(concatenar("Hola", "Mundo")); // Hola Mundo
+Console.WriteLine(concatenar("Hola", "Mundo")); // Hola Mundo
 
 // Func más compleja
 Func<int, int, string, string> formatearOperacion = (a, b, operador) =>
@@ -4277,7 +4277,7 @@ Console.WriteLine($"¿9 es múltiplo de 3? {esMultiploDe3(9)}");        // True
 // Código ejecutable
 int[] numeros = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
-// Array. Exists: verifica si existe algún elemento que cumpla
+// Array.Exists: verifica si existe algún elemento que cumpla
 bool hayPares = Array.Exists(numeros, n => n % 2 == 0);
 Console.WriteLine($"¿Hay números pares? {hayPares}"); // True
 
@@ -4316,7 +4316,7 @@ Array.Sort(palabras, (a, b) => string.Compare(b, a, StringComparison.Ordinal));
 Console.WriteLine($"Descendente: [{string.Join(", ", palabras)}]");
 
 // Ordenar por longitud
-Array.Sort(palabras, (a, b) => a.Length.CompareTo(b. Length));
+Array.Sort(palabras, (a, b) => a.Length.CompareTo(b.Length));
 Console.WriteLine($"Por longitud: [{string.Join(", ", palabras)}]");
 
 // Ordenar por longitud descendente
@@ -4331,7 +4331,7 @@ Console.WriteLine($"Por longitud desc: [{string.Join(", ", palabras)}]");
 | `Action`     | Método que realiza una acción sin retornar valor | `Action<string> log = mensaje => Console.WriteLine(mensaje);` |
 | `Func`       | Método que calcula y retorna un valor            | `Func<int, int, int> sumar = (a, b) => a + b;`                |
 | `Predicate`  | Método que evalúa una condición (retorna bool)   | `Predicate<int> esPar = n => n % 2 == 0;`                     |
-| `Comparison` | Método que compara dos objetos del mismo tipo    | `Comparison<int> comparar = (a, b) => a. CompareTo(b);`       |
+| `Comparison` | Método que compara dos objetos del mismo tipo    | `Comparison<int> comparar = (a, b) => a.CompareTo(b);`       |
 
 **Ejemplo integrador:**
 
@@ -4451,13 +4451,13 @@ saludar();
 // Operador -=:  quitar método
 saludar -= SaludarIngles;
 
-Console. WriteLine("\n=== Sin inglés ===");
+Console.WriteLine("\n=== Sin inglés ===");
 saludar();
 
 // Operador +: crear nuevo delegate combinado (sin modificar el original)
 Action saludarMas = saludar + SaludarIngles;
 
-Console. WriteLine("\n=== Delegate original (sin cambios) ===");
+Console.WriteLine("\n=== Delegate original (sin cambios) ===");
 saludar();
 
 Console.WriteLine("\n=== Delegate nuevo (con inglés) ===");
@@ -4476,7 +4476,7 @@ void SaludarIngles()
 
 void SaludarFrances()
 {
-    Console. WriteLine("Bonjour!");
+    Console.WriteLine("Bonjour!");
 }
 ```
 
@@ -4578,7 +4578,7 @@ class SistemaNotificaciones
         }
         else
         {
-            Console. WriteLine("No hay notificadores suscritos");
+            Console.WriteLine("No hay notificadores suscritos");
         }
     }
 }
@@ -4606,7 +4606,7 @@ sistema.Notificar("¡Actualización disponible!");
 sistema.SuscribirNotificador(NotificadorConsola);
 
 // Enviar tercera notificación
-Console. WriteLine("\n=== Notificación 3 (con Consola) ===");
+Console.WriteLine("\n=== Notificación 3 (con Consola) ===");
 sistema.Notificar("¡Sistema reiniciado!");
 
 // Funciones locales
@@ -4791,7 +4791,7 @@ Console.WriteLine(concatenar("La", "programación", "es", "genial"));
 // Parámetros de diferentes tipos
 Func<string, int, bool, string> formatear =
     (nombre, edad, activo) => $"{nombre}, {edad} años, {(activo ? "Activo" : "Inactivo")}";
-Console. WriteLine(formatear("Ana", 25, true));
+Console.WriteLine(formatear("Ana", 25, true));
 ```
 
 **Lambda con cuerpo de expresión (expression body)**
@@ -4913,7 +4913,7 @@ El compilador puede inferir los tipos de los parámetros lambda:
 Func<int, int, int> sumar = (x, y) => x + y;
 
 // El compilador infiere que texto es string
-Func<string, int> longitud = texto => texto. Length;
+Func<string, int> longitud = texto => texto.Length;
 
 // Inferencia con múltiples parámetros de diferentes tipos
 Func<string, int, bool> verificarLongitud = (texto, longitudMinima) =>
@@ -5034,7 +5034,7 @@ Contador contador = new Contador();
 
 Console.WriteLine($"Cuenta inicial: {contador.Obtener()}"); // 0
 
-contador. Incrementar();
+contador.Incrementar();
 contador.Incrementar();
 contador.Incrementar();
 
@@ -5095,8 +5095,8 @@ Func<string, string> procesar = datos =>
     // Esta lambda captura 'configuracion'
     // Si 'configuracion' cambia externamente, el comportamiento cambia
     return configuracion == "modo-simple"
-        ? datos. ToLower()
-        : datos. ToUpper();
+        ? datos.ToLower()
+        : datos.ToUpper();
 };
 
 Console.WriteLine(procesar("HOLA")); // hola
@@ -5181,7 +5181,7 @@ Func<int, int> CrearAcumulador(int valorInicial)
 
 ### 3.4. Funciones Anónimas
 
-Las **funciones anónimas** usando la palabra clave `delegate` son una forma más antigua de crear delegates sin nombre.  Las lambdas son más modernas y concisas, pero las funciones anónimas todavía se encuentran en código legacy.
+Las **funciones anónimas** usando la palabra clave `delegate` son una forma más antigua de crear delegates sin nombre.Las lambdas son más modernas y concisas, pero las funciones anónimas todavía se encuentran en código legacy.
 
 #### 3.4.1. Métodos anónimos con `delegate`
 
@@ -5305,7 +5305,7 @@ int[] numeros = { 1, 2, 3, 4, 5 };
 var pares = Array.FindAll(numeros, n => n % 2 == 0);
 
 // ✓ Lambdas en APIs modernas
-Task. Run(() => Console.WriteLine("Tarea asíncrona"));
+Task.Run(() => Console.WriteLine("Tarea asíncrona"));
 ```
 
 **Usar funciones anónimas (casos específicos):**
@@ -5520,7 +5520,7 @@ Func<int, bool> CrearValidadorRango(int min, int max)
 // Factory que crea formateadores
 Func<double, string> CrearFormateadorNumero(int decimales, string sufijo)
 {
-    return numero => $"{numero. ToString($"F{decimales}")}{sufijo}";
+    return numero => $"{numero.ToString($"F{decimales}")}{sufijo}";
 }
 ```
 
@@ -5550,7 +5550,7 @@ var transformarTexto = Componer(
     agregarPrefijo
 );
 
-Console. WriteLine(transformarTexto("hola mundo"));
+Console.WriteLine(transformarTexto("hola mundo"));
 // >>> HOLAMUNDO
 ```
 
@@ -5745,7 +5745,7 @@ Producto[] productos = new Producto[]
 };
 
 // Filtrar productos caros (más de $100)
-var productosCaros = OperacionesFuncionales.Filter(productos, p => p. Precio > 100);
+var productosCaros = OperacionesFuncionales.Filter(productos, p => p.Precio > 100);
 Console.WriteLine("=== Productos caros ===");
 foreach (var p in productosCaros)
 {
@@ -5754,7 +5754,7 @@ foreach (var p in productosCaros)
 
 // Transformar a nombres
 var nombres = OperacionesFuncionales.Map(productos, p => p.Nombre);
-Console.WriteLine($"\nNombres: [{string. Join(", ", nombres)}]");
+Console.WriteLine($"\nNombres: [{string.Join(", ", nombres)}]");
 
 // Transformar a precios con descuento del 10%
 var preciosConDescuento = OperacionesFuncionales.Map(productos,
@@ -5769,7 +5769,7 @@ Console.WriteLine($"\nValor total del inventario:  ${valorTotal}");
 // Encontrar el producto más caro
 Producto masCaro = OperacionesFuncionales.Reduce(productos, productos[0],
     (acum, p) => p.Precio > acum.Precio ? p : acum);
-Console.WriteLine($"\nProducto más caro: {masCaro. Nombre} (${masCaro. Precio})");
+Console.WriteLine($"\nProducto más caro: {masCaro.Nombre} (${masCaro.Precio})");
 ```
 
 **Implementación de Count con Condición**
@@ -6009,7 +6009,7 @@ Console.WriteLine($"Resultado: [{string.Join(", ", primeras3)}]");
 int[] datos = { 15, 8, 23, 4, 16, 42, 11, 7, 19 };
 
 // Filtrar > 10, elevar al cuadrado, tomar primeros 4, sumar
-int resultadoNumerico = OperacionesFuncionales. Reduce(
+int resultadoNumerico = OperacionesFuncionales.Reduce(
     OperacionesFuncionales.Take(
         OperacionesFuncionales.Map(
             OperacionesFuncionales.Filter(datos, n => n > 10),
@@ -6021,7 +6021,7 @@ int resultadoNumerico = OperacionesFuncionales. Reduce(
     (acum, n) => acum + n
 );
 
-Console. WriteLine($"Resultado numérico: {resultadoNumerico}");
+Console.WriteLine($"Resultado numérico: {resultadoNumerico}");
 ```
 
 **Consideraciones de rendimiento:**
@@ -6030,7 +6030,7 @@ Console. WriteLine($"Resultado numérico: {resultadoNumerico}");
 // Código ejecutable
 // Cada operación crea un nuevo array intermedio
 int[] numeros = new int[1000000];
-for (int i = 0; i < numeros. Length; i++)
+for (int i = 0; i < numeros.Length; i++)
 {
     numeros[i] = i + 1;
 }
@@ -6086,7 +6086,7 @@ public static class ExtensionesString
             return 0;
         }
         return texto.Split(new char[] { ' ', '\t', '\n' },
-            StringSplitOptions. RemoveEmptyEntries).Length;
+            StringSplitOptions.RemoveEmptyEntries).Length;
     }
 }
 
@@ -6217,7 +6217,7 @@ public static class ExtensionesArray
     // Imprimir array
     public static void Imprimir<T>(this T[] array)
     {
-        Console.WriteLine($"[{string. Join(", ", array)}]");
+        Console.WriteLine($"[{string.Join(", ", array)}]");
     }
     // Obtener elementos en índices pares
     public static T[] IndicesPares<T>(this T[] array)
@@ -6303,7 +6303,7 @@ Console.Write("Intercalado: ");
 array1.Intercalar(array2).Imprimir();
 
 // Dividir en chunks
-Console. WriteLine("\nChunks de 3:");
+Console.WriteLine("\nChunks de 3:");
 var chunks = numeros.DividirEnChunks(3);
 foreach (var chunk in chunks)
 {
@@ -6325,7 +6325,7 @@ public static class ExtensionesDateTime
     public static int EdadActual(this DateTime fechaNacimiento)
     {
         DateTime hoy = DateTime.Today;
-        int edad = hoy.Year - fechaNacimiento. Year;
+        int edad = hoy.Year - fechaNacimiento.Year;
         if (fechaNacimiento.Date > hoy.AddYears(-edad))
         {
             edad--;
@@ -6451,7 +6451,7 @@ Console.WriteLine($"¿'abc' es mayor que 'xyz'? {"abc".EsMayorQue("xyz")}");
 
 // Tipo de referencia
 string texto = null;
-Console.WriteLine($"¿El texto es nulo? {texto. EsNulo()}");
+Console.WriteLine($"¿El texto es nulo? {texto.EsNulo()}");
 
 // Tipo valor
 int numero = 42;
@@ -6498,14 +6498,14 @@ try
 }
 catch (ArgumentException ex)
 {
-    Console. WriteLine($"Error: {ex. Message}");
+    Console.WriteLine($"Error: {ex.Message}");
 }
 
 // Pipeline fluido
 string resultado = "hola mundo"
     .Aplicar(s => Console.WriteLine($"Original: {s}"))
     .Usando(s => s.ToUpper())
-    .Aplicar(s => Console. WriteLine($"Mayúsculas: {s}"))
+    .Aplicar(s => Console.WriteLine($"Mayúsculas: {s}"))
     .Usando(s => s.Replace(" ", "-"));
 
 Console.WriteLine($"Final: {resultado}");
@@ -6623,7 +6623,7 @@ int resultado = numeros
     . ParaCadaElemento(n => Console.Write($"{n} ")) // Mostrar cada uno
     .Reducir(0, (acum, n) => acum + n);          // Sumar todos
 
-Console. WriteLine($"\n\nResultado final: {resultado}");
+Console.WriteLine($"\n\nResultado final: {resultado}");
 
 // Más ejemplos fluidos
 string[] palabras = { "casa", "sol", "programación", "luz", "computadora" };
@@ -6632,7 +6632,7 @@ int palabrasLargas = palabras
     . Filtrar(p => p.Length > 4)
     .Contar(_ => true); // Contar todas (después del filtro)
 
-Console. WriteLine($"Palabras largas: {palabrasLargas}");
+Console.WriteLine($"Palabras largas: {palabrasLargas}");
 
 // Verificaciones
 bool hayPares = numeros.Alguno(n => n % 2 == 0);
@@ -6654,7 +6654,7 @@ var resultado1 = numeros
     .Mapear(n => n * 2);
 
 // vs.  sintaxis anidada (menos legible)
-var resultado2 = OperacionesFuncionales. Map(
+var resultado2 = OperacionesFuncionales.Map(
     OperacionesFuncionales.Filter(numeros, n => n > 5),
     n => n * 2
 );
@@ -6833,7 +6833,7 @@ Vector2D suma = v1 + v2;
 Console.WriteLine($"v1 + v2 = {suma}"); // (4, 6)
 
 Vector2D resta = v1 - v2;
-Console. WriteLine($"v1 - v2 = {resta}"); // (2, 2)
+Console.WriteLine($"v1 - v2 = {resta}"); // (2, 2)
 
 Vector2D multiplicacion = v1 * 2;
 Console.WriteLine($"v1 * 2 = {multiplicacion}"); // (6, 8)
@@ -6858,7 +6858,7 @@ public class Contador
     // Operador unario +
     public static Contador operator +(Contador c)
     {
-        return new Contador(Math. Abs(c.Valor));
+        return new Contador(Math.Abs(c.Valor));
     }
     // Operador unario -
     public static Contador operator -(Contador c)
@@ -6966,7 +6966,7 @@ public class Fraccion
     {
         if (Denominador == 1)
         {
-            return Numerador. ToString();
+            return Numerador.ToString();
         }
         return $"{Numerador}/{Denominador}";
     }
@@ -7012,7 +7012,7 @@ public class Dinero
     public Dinero(decimal cantidad, string moneda)
     {
         Cantidad = cantidad;
-        Moneda = moneda. ToUpper();
+        Moneda = moneda.ToUpper();
     }
     // Operador == (debe sobrecargarse con !=)
     public static bool operator ==(Dinero d1, Dinero d2)
@@ -7098,7 +7098,7 @@ try
 }
 catch (InvalidOperationException ex)
 {
-    Console. WriteLine($"\nError: {ex.Message}");
+    Console.WriteLine($"\nError: {ex.Message}");
 }
 ```
 
@@ -7194,7 +7194,7 @@ public class EstadoOperacion
     // Operador false (debe implementarse con true)
     public static bool operator false(EstadoOperacion estado)
     {
-        return ! estado.Completado || estado. ConErrores;
+        return ! estado.Completado || estado.ConErrores;
     }
     // Operador !  (negación)
     public static EstadoOperacion operator !(EstadoOperacion estado)
@@ -7349,7 +7349,7 @@ public class Fraccion
     // Conversión explícita de Fraccion a int (pierde la parte fraccionaria)
     public static explicit operator int(Fraccion f)
     {
-        return f.Numerador / f. Denominador;
+        return f.Numerador / f.Denominador;
     }
     // Conversión implícita a double (segura, no pierde información conceptual)
     public static implicit operator double(Fraccion f)
@@ -7584,7 +7584,7 @@ La comparación y ordenación son operaciones fundamentales en programación.  C
 
 **Propósito:   orden natural de un tipo**
 
-La interfaz `IComparable<T>` define el **orden natural** de un tipo.  Cuando implementas esta interfaz, estás diciendo "esta es la forma estándar de ordenar objetos de mi tipo".
+La interfaz `IComparable<T>` define el **orden natural** de un tipo.Cuando implementas esta interfaz, estás diciendo "esta es la forma estándar de ordenar objetos de mi tipo".
 
 ```csharp
 public interface IComparable<T>
@@ -7654,7 +7654,7 @@ public class Persona : IComparable<Persona>
             return comparacionApellido; // Apellidos diferentes
         }
         // Si apellidos son iguales, comparar por nombre
-        return this. Nombre.CompareTo(other.Nombre);
+        return this.Nombre.CompareTo(other.Nombre);
     }
     public override string ToString()
     {
@@ -7691,7 +7691,7 @@ public class Dinero :  IComparable<Dinero>
     public Dinero(decimal cantidad, string moneda)
     {
         Cantidad = cantidad;
-        Moneda = moneda. ToUpper();
+        Moneda = moneda.ToUpper();
     }
     public int CompareTo(Dinero other)
     {
@@ -7706,7 +7706,7 @@ public class Dinero :  IComparable<Dinero>
                 $"No se pueden comparar {this.Moneda} con {other.Moneda}");
         }
         // Comparar cantidades
-        return this.Cantidad.CompareTo(other. Cantidad);
+        return this.Cantidad.CompareTo(other.Cantidad);
     }
     public override string ToString()
     {
@@ -7730,7 +7730,7 @@ try
 }
 catch (ArgumentException ex)
 {
-    Console. WriteLine($"\nError: {ex.Message}");
+    Console.WriteLine($"\nError: {ex.Message}");
 }
 ```
 
@@ -7759,7 +7759,7 @@ public class Numero : IComparable<Numero>
             return 1; // this > null
         }
         // Comparación simple que cumple todas las reglas
-        return this. Valor.CompareTo(other.Valor);
+        return this.Valor.CompareTo(other.Valor);
     }
     public override string ToString()
     {
@@ -7870,7 +7870,7 @@ public class Estudiante : IComparable<Estudiante>
     {
         if (other == null) return 1;
         // Descendente: invertir la comparación
-        return other. Promedio.CompareTo(this.Promedio);
+        return other.Promedio.CompareTo(this.Promedio);
     }
     public override string ToString()
     {
@@ -7925,7 +7925,7 @@ public class Libro : IComparable<Libro>
     {
         if (other == null) return 1;
         // Primero por autor
-        int comparacionAutor = this.Autor. CompareTo(other.Autor);
+        int comparacionAutor = this.Autor.CompareTo(other.Autor);
         if (comparacionAutor != 0)
         {
             return comparacionAutor;
@@ -7961,7 +7961,7 @@ Array.Sort(biblioteca);
 Console.WriteLine("\n=== Biblioteca ordenada (por autor, título) ===");
 foreach (var libro in biblioteca)
 {
-    Console. WriteLine($"  {libro}");
+    Console.WriteLine($"  {libro}");
 }
 
 // Búsqueda binaria (requiere array ordenado)
@@ -7970,7 +7970,7 @@ int indice = Array.BinarySearch(biblioteca, buscado);
 
 if (indice >= 0)
 {
-    Console. WriteLine($"\n'1984' encontrado en posición {indice}");
+    Console.WriteLine($"\n'1984' encontrado en posición {indice}");
 }
 ```
 
@@ -8004,7 +8004,7 @@ public class Evento : IComparable<Evento>
 Evento[] agenda = new Evento[]
 {
     new Evento("Conferencia C#", new DateTime(2024, 6, 15), "Madrid"),
-    new Evento("Meetup . NET", new DateTime(2024, 3, 20), "Barcelona"),
+    new Evento("Meetup .NET", new DateTime(2024, 3, 20), "Barcelona"),
     new Evento("Hackathon", new DateTime(2024, 9, 5), "Valencia"),
     new Evento("Workshop", new DateTime(2024, 1, 10), "Sevilla")
 };
@@ -8018,7 +8018,7 @@ foreach (var evento in agenda)
 // Ordenar cronológicamente
 Array.Sort(agenda);
 
-Console. WriteLine("\n=== Agenda ordenada cronológicamente ===");
+Console.WriteLine("\n=== Agenda ordenada cronológicamente ===");
 foreach (var evento in agenda)
 {
     Console.WriteLine($"  {evento}");
@@ -8112,7 +8112,7 @@ public class ComparadorPorNombre : IComparer<Persona>
         if (x == null && y == null) return 0;
         if (x == null) return -1;
         if (y == null) return 1;
-        return x.Nombre.CompareTo(y. Nombre);
+        return x.Nombre.CompareTo(y.Nombre);
     }
 }
 // Comparador por apellido
@@ -8123,7 +8123,7 @@ public class ComparadorPorApellido : IComparer<Persona>
         if (x == null && y == null) return 0;
         if (x == null) return -1;
         if (y == null) return 1;
-        return x.Apellido. CompareTo(y.Apellido);
+        return x.Apellido.CompareTo(y.Apellido);
     }
 }
 
@@ -8198,7 +8198,7 @@ public class ComparadorCategoriaPrecio : IComparer<Producto>
         if (x == null) return -1;
         if (y == null) return 1;
         // Primero por categoría
-        int comparacionCategoria = x.Categoria.CompareTo(y. Categoria);
+        int comparacionCategoria = x.Categoria.CompareTo(y.Categoria);
         if (comparacionCategoria != 0)
         {
             return comparacionCategoria;
@@ -8407,7 +8407,7 @@ foreach (var p in personas)
 
 // Crear comparador con lambda: ordenar por longitud del nombre
 var comparadorLongitudNombre = Comparer<Persona>.Create((p1, p2) =>
-    p1.Nombre. Length.CompareTo(p2.Nombre.Length));
+    p1.Nombre.Length.CompareTo(p2.Nombre.Length));
 Array.Sort(personas, comparadorLongitudNombre);
 
 Console.WriteLine("\n=== Ordenado por longitud del nombre ===");
@@ -8507,7 +8507,7 @@ void MostrarEstudiantes(Estudiante[] estudiantes)
 // Código ejecutable
 string[] palabras = { "Zebra", "apple", "Banana", "CHERRY", "date" };
 
-Console. WriteLine("=== Array original ===");
+Console.WriteLine("=== Array original ===");
 Console.WriteLine($"  [{string.Join(", ", palabras)}]");
 
 // Ordenación case-sensitive (por defecto)
@@ -8621,7 +8621,7 @@ void MostrarTareas(Tarea[] tareas)
 
 **Propósito:  comparación de igualdad eficiente y fuertemente tipada**
 
-La interfaz `IEquatable<T>` proporciona un método fuertemente tipado para comparar igualdad, evitando el boxing y siendo más eficiente que `Object. Equals(object obj)`.
+La interfaz `IEquatable<T>` proporciona un método fuertemente tipado para comparar igualdad, evitando el boxing y siendo más eficiente que `Object.Equals(object obj)`.
 
 ```csharp
 public interface IEquatable<T>
@@ -8687,7 +8687,7 @@ Punto p2 = new Punto(3, 4);
 Punto p3 = new Punto(5, 6);
 
 // Usar Equals fuertemente tipado
-Console. WriteLine($"p1.Equals(p2): {p1.Equals(p2)}"); // True
+Console.WriteLine($"p1.Equals(p2): {p1.Equals(p2)}"); // True
 Console.WriteLine($"p1.Equals(p3): {p1.Equals(p3)}"); // False
 
 // Object.Equals también funciona
@@ -8819,7 +8819,7 @@ Punto[] puntos = new Punto[]
 
 // Buscar índice de un punto específico
 Punto buscado = new Punto(3, 4);
-int indice = Array. IndexOf(puntos, buscado);
+int indice = Array.IndexOf(puntos, buscado);
 
 Console.WriteLine($"Buscando {buscado}:");
 if (indice >= 0)
@@ -8982,11 +8982,11 @@ Console.WriteLine($"  [{string.Join(", ", palabras1)}]");
 
 // StringComparer.OrdinalIgnoreCase (case-insensitive)
 string[] palabras2 = (string[])palabras.Clone();
-Array.Sort(palabras2, StringComparer. OrdinalIgnoreCase);
+Array.Sort(palabras2, StringComparer.OrdinalIgnoreCase);
 Console.WriteLine("\n=== OrdinalIgnoreCase ===");
 Console.WriteLine($"  [{string.Join(", ", palabras2)}]");
 
-// StringComparer. CurrentCulture (según cultura actual)
+// StringComparer.CurrentCulture (según cultura actual)
 string[] palabras3 = (string[])palabras.Clone();
 Array.Sort(palabras3, StringComparer.CurrentCulture);
 Console.WriteLine("\n=== CurrentCulture ===");
@@ -9044,7 +9044,7 @@ Ordena usando un comparador personalizado:
 // Código ejecutable
 string[] palabras = { "banana", "Manzana", "cereza" };
 
-Console.WriteLine($"Antes: [{string. Join(", ", palabras)}]");
+Console.WriteLine($"Antes: [{string.Join(", ", palabras)}]");
 Array.Sort(palabras, StringComparer.OrdinalIgnoreCase);
 Console.WriteLine($"Después: [{string.Join(", ", palabras)}]");
 ```
@@ -9057,7 +9057,7 @@ Ordena usando un delegate `Comparison<T>`:
 // Código ejecutable
 int[] numeros = { 1, -5, 3, -2, 8 };
 
-Console.WriteLine($"Antes: [{string. Join(", ", numeros)}]");
+Console.WriteLine($"Antes: [{string.Join(", ", numeros)}]");
 
 // Ordenar por valor absoluto usando Comparison
 Array.Sort(numeros, (x, y) => Math.Abs(x).CompareTo(Math.Abs(y)));
@@ -9096,7 +9096,7 @@ Archivo[] archivos = new Archivo[]
     new Archivo("audio. mp3", 3072000, new DateTime(2024, 2, 5))
 };
 
-Console. WriteLine("=== Archivos originales ===");
+Console.WriteLine("=== Archivos originales ===");
 MostrarArchivos(archivos);
 
 // Ordenar por tamaño (lambda directa)
@@ -9165,7 +9165,7 @@ Console.WriteLine("=== Transacciones originales ===");
 MostrarTransacciones(transacciones);
 
 // Ordenar primero por tipo (Ingreso antes que Egreso), luego por fecha
-Array. Sort(transacciones, (t1, t2) =>
+Array.Sort(transacciones, (t1, t2) =>
 {
     int comparacionTipo = t1.Tipo.CompareTo(t2.Tipo);
     if (comparacionTipo != 0)
@@ -9315,7 +9315,7 @@ void MostrarProductos(Producto[] productos)
 - **Algoritmo**:  QuickSort (inestable) o IntroSort (híbrido)
 - **Complejidad promedio**: O(n log n)
 - **Complejidad peor caso**: O(n²) para QuickSort, O(n log n) para IntroSort
-- **. NET usa IntroSort**:  QuickSort + HeapSort para evitar el peor caso
+- **.NET usa IntroSort**:  QuickSort + HeapSort para evitar el peor caso
 
 ```csharp
 using System.Diagnostics;
@@ -9328,11 +9328,11 @@ foreach (int tamaño in tamaños)
 {
     int[] numeros = GenerarArrayAleatorio(tamaño);
 
-    Stopwatch sw = Stopwatch. StartNew();
+    Stopwatch sw = Stopwatch.StartNew();
     Array.Sort(numeros);
     sw.Stop();
 
-    Console. WriteLine($"Ordenar {tamaño: N0} elementos: {sw. ElapsedMilliseconds}ms");
+    Console.WriteLine($"Ordenar {tamaño: N0} elementos: {sw.ElapsedMilliseconds}ms");
 }
 
 // Funciones locales
@@ -9408,7 +9408,7 @@ int indice1 = Array.BinarySearch(numeros, buscado1);
 
 if (indice1 >= 0)
 {
-    Console. WriteLine($"{buscado1} encontrado en índice {indice1}");
+    Console.WriteLine($"{buscado1} encontrado en índice {indice1}");
 }
 else
 {
@@ -9427,7 +9427,7 @@ else
 {
     // El complemento bit a bit (~) del valor retornado indica dónde debería insertarse
     int posicionInsercion = ~indice2;
-    Console.WriteLine($"{buscado2} no encontrado.  Debería insertarse en índice {posicionInsercion}");
+    Console.WriteLine($"{buscado2} no encontrado.Debería insertarse en índice {posicionInsercion}");
 }
 ```
 
@@ -9457,7 +9457,7 @@ foreach (int valor in valoresBuscar)
     else
     {
         int posicion = ~resultado;
-        Console. WriteLine($"{valor}: No encontrado. Insertar en índice {posicion}");
+        Console.WriteLine($"{valor}: No encontrado.Insertar en índice {posicion}");
     }
 }
 
@@ -9484,7 +9484,7 @@ Console.WriteLine($"Array ordenado:  [{string.Join(", ", palabras)}]");
 
 // Buscar case-insensitive
 string buscada = "banana";
-int indice = Array.BinarySearch(palabras, buscada, StringComparer. OrdinalIgnoreCase);
+int indice = Array.BinarySearch(palabras, buscada, StringComparer.OrdinalIgnoreCase);
 
 if (indice >= 0)
 {
@@ -9554,7 +9554,7 @@ Array.Sort(empleados);
 Console.WriteLine("\n=== Ordenado por Id ===");
 foreach (var emp in empleados)
 {
-    Console. WriteLine($"  {emp}");
+    Console.WriteLine($"  {emp}");
 }
 
 // Buscar por Id
@@ -9611,7 +9611,7 @@ foreach (int tamaño in tamaños)
     sw2.Stop();
 
     Console.WriteLine($"\n=== Array de {tamaño:N0} elementos ===");
-    Console. WriteLine($"Búsqueda lineal: {sw1.Elapsed.TotalMilliseconds:F4}ms");
+    Console.WriteLine($"Búsqueda lineal: {sw1.Elapsed.TotalMilliseconds:F4}ms");
     Console.WriteLine($"Búsqueda binaria: {sw2.Elapsed.TotalMilliseconds:F4}ms");
     Console.WriteLine($"Mejora: {sw1.Elapsed.TotalMilliseconds / sw2.Elapsed.TotalMilliseconds:F2}x");
 }
@@ -9755,9 +9755,9 @@ public class Version : IComparable<Version>, IEquatable<Version>
         if (other == null) return 1;
         int comparacionMayor = this.Mayor.CompareTo(other.Mayor);
         if (comparacionMayor != 0) return comparacionMayor;
-        int comparacionMenor = this.Menor. CompareTo(other.Menor);
+        int comparacionMenor = this.Menor.CompareTo(other.Menor);
         if (comparacionMenor != 0) return comparacionMenor;
-        return this.Parche. CompareTo(other.Parche);
+        return this.Parche.CompareTo(other.Parche);
     }
     // Equals (consistente con CompareTo)
     public bool Equals(Version other)
@@ -9928,7 +9928,7 @@ int indice = Array.BinarySearch(numeros, 8); // Resultado incorrecto
 // ✓ BIEN
 int[] numeros = { 5, 2, 8, 1, 9 };
 Array.Sort(numeros); // Ordenar primero
-int indice = Array. BinarySearch(numeros, 8); // Ahora es correcto
+int indice = Array.BinarySearch(numeros, 8); // Ahora es correcto
 
 ```
 
@@ -10001,7 +10001,7 @@ listaNumeros.Add(30);
 
 #### 5.1.2. Namespaces Importantes
 
-**`System.Collections. Generic`**
+**`System.Collections.Generic`**
 
 Contiene las colecciones genéricas (las más usadas y recomendadas):
 
@@ -10037,7 +10037,7 @@ Stack stack = new Stack();
 Contiene colecciones especializadas para casos de uso específicos:
 
 ```csharp
-using System.Collections. Specialized;
+using System.Collections.Specialized;
 
 // Colecciones especializadas
 NameValueCollection config = new NameValueCollection();
@@ -10118,7 +10118,7 @@ foreach (int n in numeros)
 
 ```
 
-**IEnumerator y yield return**. Para recorrer información de forma avanzada C# utiliza el patrón de diseño Iterator. La interfaz `IEnumerable` nos permite usar el bucle foreach, pero internamente esto funciona gracias a un objeto `IEnumerator`. Una herramienta potente para manipular datos es el uso de yield return, que permite generar una secuencia de elementos "sobre la marcha" (evaluación perezosa). Esto permite procesar grandes volúmenes de datos sin necesidad de cargarlos todos simultáneamente en una lista en memoria.
+**IEnumerator y yield return**. Para recorrer información de forma avanzada C# utiliza el patrón de diseño Iterator.La interfaz `IEnumerable` nos permite usar el bucle foreach, pero internamente esto funciona gracias a un objeto `IEnumerator`. Una herramienta potente para manipular datos es el uso de yield return, que permite generar una secuencia de elementos "sobre la marcha" (evaluación perezosa). Esto permite procesar grandes volúmenes de datos sin necesidad de cargarlos todos simultáneamente en una lista en memoria.
 
 ```csharp
 using System;
@@ -10195,7 +10195,7 @@ public interface IDictionary<TKey, TValue> : ICollection<KeyValuePair<TKey, TVal
 ```
 
 
-**El Contrato de Igualdad en Colecciones Basadas en Hash** Al almacenar información en colecciones como `HashSet<T>` o `Dictionary<K, V>`, la colección necesita una forma de identificar si un objeto es único. Si trabajamos con tipos personalizados, debemos asegurar que el método `GetHashCode()` genere una "huella digital" coherente y que `Equals()` compare correctamente los valores. Sin esto, la colección no podrá recuperar o filtrar la información de forma fiable, tratando objetos con los mismos datos como si fueran diferentes.
+**El Contrato de Igualdad en Colecciones Basadas en Hash** Al almacenar información en colecciones como `HashSet<T>` o `Dictionary<K, V>`, la colección necesita una forma de identificar si un objeto es único. Si trabajamos con tipos personalizados, debemos asegurar que el método `GetHashCode()` genere una "huella digital" coherente y que `Equals()` compare correctamente los valores.Sin esto, la colección no podrá recuperar o filtrar la información de forma fiable, tratando objetos con los mismos datos como si fueran diferentes.
 
 ---
 
@@ -10231,7 +10231,7 @@ int numero2 = listaConGenericos[0]; // Sin unboxing ni cast
 **Comparación de rendimiento:**
 
 ```csharp
-using System. Diagnostics;
+using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -10406,7 +10406,7 @@ Console.WriteLine($"Cantidad: {numeros.Count}");
 List<double> precios = new List<double> { 19.99, 29.99, 39.99, 49.99 };
 Console.WriteLine($"\nPrecios inicializados:");
 Console.WriteLine($"Capacidad: {precios.Capacity}");
-Console.WriteLine($"Cantidad: {precios. Count}");
+Console.WriteLine($"Cantidad: {precios.Count}");
 
 foreach (double precio in precios)
 {
@@ -10423,7 +10423,7 @@ foreach (double precio in precios)
 List<string> frutas = new List<string>();
 
 // Add:  agregar al final
-frutas. Add("Manzana");
+frutas.Add("Manzana");
 frutas.Add("Banana");
 frutas.Add("Cereza");
 
@@ -10511,7 +10511,7 @@ Console.WriteLine($"\nRemove('Verde'): {eliminado}");
 MostrarLista(colores);
 
 // RemoveAt: elimina en índice específico
-colores. RemoveAt(0); // Elimina "Rojo"
+colores.RemoveAt(0); // Elimina "Rojo"
 Console.WriteLine("\nDespués de RemoveAt(0):");
 MostrarLista(colores);
 
@@ -10528,7 +10528,7 @@ Console.WriteLine("\nAntes de RemoveRange:");
 MostrarLista(colores);
 
 colores.RemoveRange(1, 2); // Elimina 2 elementos desde índice 1
-Console. WriteLine("\nDespués de RemoveRange(1, 2):");
+Console.WriteLine("\nDespués de RemoveRange(1, 2):");
 MostrarLista(colores);
 
 // Clear: elimina todos
@@ -10630,7 +10630,7 @@ List<Producto> productos = new List<Producto>
 };
 
 // Buscar producto por Id
-Producto producto = productos. Find(p => p.Id == 3);
+Producto producto = productos.Find(p => p.Id == 3);
 Console.WriteLine($"Producto con Id 3: {producto}");
 
 // Buscar productos de una categoría
@@ -10642,7 +10642,7 @@ foreach (var p in electronica)
 }
 
 // Verificar si hay productos caros
-bool hayCaros = productos. Exists(p => p.Precio > 500);
+bool hayCaros = productos.Exists(p => p.Precio > 500);
 Console.WriteLine($"\n¿Hay productos > $500? {hayCaros}");
 
 // Verificar si todos están en stock (ejemplo)
@@ -10656,7 +10656,7 @@ for (int i = 1; i < productos.Count; i++)
 {
     if (productos[i].Precio > precioMax)
     {
-        precioMax = productos[i]. Precio;
+        precioMax = productos[i].Precio;
         indiceMax = i;
     }
 }
@@ -10682,7 +10682,7 @@ numeros.Reverse();
 Console.WriteLine($"Después de Reverse(): [{string.Join(", ", numeros)}]");
 
 // Sort con Comparison<T>
-numeros. Sort((a, b) => a.CompareTo(b)); // Ascendente
+numeros.Sort((a, b) => a.CompareTo(b)); // Ascendente
 Console.WriteLine($"Sort ascendente: [{string.Join(", ", numeros)}]");
 
 numeros.Sort((a, b) => b.CompareTo(a)); // Descendente
@@ -10727,7 +10727,7 @@ Console.WriteLine("\n=== Ordenado por nombre ===");
 MostrarEstudiantes(estudiantes);
 
 // Ordenar por promedio (descendente)
-estudiantes. Sort((e1, e2) => e2.Promedio. CompareTo(e1.Promedio));
+estudiantes.Sort((e1, e2) => e2.Promedio.CompareTo(e1.Promedio));
 Console.WriteLine("\n=== Ordenado por promedio (desc) ===");
 MostrarEstudiantes(estudiantes);
 
@@ -10824,7 +10824,7 @@ List<Persona> original = new List<Persona>
 List<Persona> copiaSuperficial = new List<Persona>(original);
 
 // Modificar objeto en copia
-copiaSuperficial[0]. Edad = 99;
+copiaSuperficial[0].Edad = 99;
 
 Console.WriteLine("Original:");
 foreach (var p in original)
@@ -10851,7 +10851,7 @@ foreach (var persona in original)
     });
 }
 
-copiaProfunda[0]. Edad = 50;
+copiaProfunda[0].Edad = 50;
 
 Console.WriteLine("\nCopia profunda:");
 foreach (var p in copiaProfunda)
@@ -10877,7 +10877,7 @@ List<int> numeros = new List<int>();
 Console.WriteLine("Agregando elementos:");
 for (int i = 1; i <= 10; i++)
 {
-    numeros. Add(i);
+    numeros.Add(i);
     Console.WriteLine($"Count: {numeros.Count}, Capacity: {numeros.Capacity}");
 }
 
@@ -10899,14 +10899,14 @@ for (int i = 0; i < 10; i++)
 
 Console.WriteLine($"Antes de TrimExcess:");
 Console.WriteLine($"  Count: {numeros.Count}");
-Console.WriteLine($"  Capacity: {numeros. Capacity}");
+Console.WriteLine($"  Capacity: {numeros.Capacity}");
 
 // Reducir capacidad al tamaño real
-numeros. TrimExcess();
+numeros.TrimExcess();
 
 Console.WriteLine($"\nDespués de TrimExcess:");
 Console.WriteLine($"  Count: {numeros.Count}");
-Console.WriteLine($"  Capacity: {numeros. Capacity}");
+Console.WriteLine($"  Capacity: {numeros.Capacity}");
 ```
 
 **Optimización con capacidad inicial:**
@@ -11028,9 +11028,9 @@ MostrarDiccionario(precios);
 
 // TryAdd (C# 7+):  agregar solo si no existe
 bool agregado1 = precios.TryAdd("Webcam", 80.00);
-bool agregado2 = precios. TryAdd("Mouse", 20.00); // No agrega (ya existe)
+bool agregado2 = precios.TryAdd("Mouse", 20.00); // No agrega (ya existe)
 
-Console. WriteLine($"\nTryAdd('Webcam'): {agregado1}");
+Console.WriteLine($"\nTryAdd('Webcam'): {agregado1}");
 Console.WriteLine($"TryAdd('Mouse'): {agregado2}");
 MostrarDiccionario(precios);
 
@@ -11278,7 +11278,7 @@ foreach (string palabra in palabras)
 Console.WriteLine("=== Frecuencia de palabras ===");
 foreach (var par in frecuencia)
 {
-    Console.WriteLine($"'{par.Key}': {par. Value} veces");
+    Console.WriteLine($"'{par.Key}': {par.Value} veces");
 }
 
 // Palabra más frecuente
@@ -11289,7 +11289,7 @@ foreach (var par in frecuencia)
 {
     if (par.Value > maxFrecuencia)
     {
-        maxFrecuencia = par. Value;
+        maxFrecuencia = par.Value;
         palabraMasFrecuente = par.Key;
     }
 }
@@ -11313,7 +11313,7 @@ class ConfiguracionApp
     }
     public string ObtenerValor(string clave, string valorPorDefecto = "")
     {
-        if (configuracion. TryGetValue(clave, out string valor))
+        if (configuracion.TryGetValue(clave, out string valor))
         {
             return valor;
         }
@@ -11393,7 +11393,7 @@ Dictionary<string, List<int>> indice = CrearIndiceInvertido(documentos);
 Console.WriteLine("=== Índice Invertido ===");
 foreach (var par in indice)
 {
-    Console.WriteLine($"{par.Key}: documentos [{string.Join(", ", par. Value)}]");
+    Console.WriteLine($"{par.Key}: documentos [{string.Join(", ", par.Value)}]");
 }
 
 // Buscar documentos que contienen una palabra
@@ -11427,7 +11427,7 @@ Dictionary<string, List<int>> CrearIndiceInvertido(Dictionary<int, string> docum
             {
                 if (!indice[palabraLimpia].Contains(idDocumento))
                 {
-                    indice[palabraLimpia]. Add(idDocumento);
+                    indice[palabraLimpia].Add(idDocumento);
                 }
             }
             else
@@ -11450,7 +11450,7 @@ void BuscarPalabra(Dictionary<string, List<int>> indice, string palabra)
     }
     else
     {
-        Console. WriteLine($"'{palabra}' no encontrada");
+        Console.WriteLine($"'{palabra}' no encontrada");
     }
 }
 ```
@@ -11492,7 +11492,7 @@ Console.WriteLine($"\n¿Contiene 'HOLA'? {existe}"); // True
 
 **Objetos personalizados como claves:**
 
-Si usamos objetos personalizados como claves en un Dictionary<K, V>, la colección necesita una forma de identificar si un objeto es único. El método `GetHashCode()` debe generar una "huella digital" coherente y que `Equals()` compare correctamente los valores. Sin esto, la colección no podrá recuperar o filtrar la información de forma fiable, tratando objetos con los mismos datos como si fueran diferentes.
+Si usamos objetos personalizados como claves en un Dictionary<K, V>, la colección necesita una forma de identificar si un objeto es único. El método `GetHashCode()` debe generar una "huella digital" coherente y que `Equals()` compare correctamente los valores.Sin esto, la colección no podrá recuperar o filtrar la información de forma fiable, tratando objetos con los mismos datos como si fueran diferentes.
 
 ```csharp
 public class Coordenada :  IEquatable<Coordenada>
@@ -11542,7 +11542,7 @@ foreach (var par in mapa)
 Coordenada buscar = new Coordenada(10, 5);
 if (mapa.TryGetValue(buscar, out string nombre))
 {
-    Console. WriteLine($"\nEn {buscar} está: {nombre}");
+    Console.WriteLine($"\nEn {buscar} está: {nombre}");
 }
 
 // Funciona porque implementamos Equals y GetHashCode correctamente
@@ -11555,7 +11555,7 @@ if (mapa.TryGetValue(buscar, out string nombre))
 
 #### 5.4.1. Características
 
-**HashSet<T>** es una colección que almacena elementos únicos sin orden específico. Si trabajamos con objetos propios, la colección necesita una forma de identificar si un objeto es único. Si trabajamos con tipos personalizados, debemos asegurar que el método `GetHashCode()` genere una "huella digital" coherente y que `Equals()` compare correctamente los valores. Sin esto, la colección no podrá recuperar o filtrar la información de forma fiable, tratando objetos con los mismos datos como si fueran diferentes.
+**HashSet<T>** es una colección que almacena elementos únicos sin orden específico. Si trabajamos con objetos propios, la colección necesita una forma de identificar si un objeto es único. Si trabajamos con tipos personalizados, debemos asegurar que el método `GetHashCode()` genere una "huella digital" coherente y que `Equals()` compare correctamente los valores.Sin esto, la colección no podrá recuperar o filtrar la información de forma fiable, tratando objetos con los mismos datos como si fueran diferentes.
 
 **Características principales:**
 - ✓ Elementos únicos (no permite duplicados)
@@ -11586,7 +11586,7 @@ numeros.Add(3);
 numeros.Add(4);
 numeros.Add(5);
 
-Console. WriteLine($"\nHashSet:  [{string.Join(", ", numeros)}]");
+Console.WriteLine($"\nHashSet:  [{string.Join(", ", numeros)}]");
 Console.WriteLine($"Cantidad: {numeros.Count}");
 
 // Contains: verificar si existe
@@ -11652,7 +11652,7 @@ Console.WriteLine($"\nA ∪ B: [{string.Join(", ", conjuntoA)}]");
 HashSet<int> conjuntoA = new HashSet<int> { 1, 2, 3, 4 };
 HashSet<int> conjuntoB = new HashSet<int> { 3, 4, 5, 6 };
 
-Console. WriteLine($"Conjunto A: [{string.Join(", ", conjuntoA)}]");
+Console.WriteLine($"Conjunto A: [{string.Join(", ", conjuntoA)}]");
 Console.WriteLine($"Conjunto B:  [{string.Join(", ", conjuntoB)}]");
 
 // IntersectWith:  A ∩ B (modifica conjuntoA)
@@ -11684,7 +11684,7 @@ Console.WriteLine($"\nA - B: [{string.Join(", ", conjuntoA)}]");
 HashSet<int> conjuntoA = new HashSet<int> { 1, 2, 3, 4 };
 HashSet<int> conjuntoB = new HashSet<int> { 3, 4, 5, 6 };
 
-Console.WriteLine($"Conjunto A: [{string. Join(", ", conjuntoA)}]");
+Console.WriteLine($"Conjunto A: [{string.Join(", ", conjuntoA)}]");
 Console.WriteLine($"Conjunto B: [{string.Join(", ", conjuntoB)}]");
 
 // SymmetricExceptWith: A Δ B (elementos en A o B, pero no en ambos)
@@ -11703,7 +11703,7 @@ HashSet<int> conjuntoC = new HashSet<int> { 4, 5, 6 };
 HashSet<int> conjuntoD = new HashSet<int> { 1, 2, 3 };
 
 // IsSubsetOf: A ⊆ B
-bool esSubconjunto = conjuntoA. IsSubsetOf(conjuntoB);
+bool esSubconjunto = conjuntoA.IsSubsetOf(conjuntoB);
 Console.WriteLine($"A es subconjunto de B: {esSubconjunto}"); // True
 
 // IsProperSubsetOf: A ⊂ B (subconjunto propio)
@@ -11719,14 +11719,14 @@ bool esSuperconjuntoPropio = conjuntoB.IsProperSupersetOf(conjuntoA);
 Console.WriteLine($"B es superconjunto propio de A: {esSuperconjuntoPropio}"); // True
 
 // Overlaps: ¿tienen elementos en común?
-bool tienenComunes1 = conjuntoA. Overlaps(conjuntoB);
+bool tienenComunes1 = conjuntoA.Overlaps(conjuntoB);
 bool tienenComunes2 = conjuntoA.Overlaps(conjuntoC);
 Console.WriteLine($"A y B tienen elementos en común: {tienenComunes1}"); // True
 Console.WriteLine($"A y C tienen elementos en común: {tienenComunes2}"); // False
 
 // SetEquals: ¿son iguales?
 bool sonIguales1 = conjuntoA.SetEquals(conjuntoD);
-bool sonIguales2 = conjuntoA. SetEquals(conjuntoB);
+bool sonIguales2 = conjuntoA.SetEquals(conjuntoB);
 Console.WriteLine($"A y D son iguales:  {sonIguales1}"); // True
 Console.WriteLine($"A y B son iguales: {sonIguales2}"); // False
 ```
@@ -11743,7 +11743,7 @@ List<int> numerosConDuplicados = new List<int>
 };
 
 Console.WriteLine($"Lista original: [{string.Join(", ", numerosConDuplicados)}]");
-Console.WriteLine($"Cantidad: {numerosConDuplicados. Count}");
+Console.WriteLine($"Cantidad: {numerosConDuplicados.Count}");
 
 // Eliminar duplicados con HashSet
 HashSet<int> numerosUnicos = new HashSet<int>(numerosConDuplicados);
@@ -11753,7 +11753,7 @@ Console.WriteLine($"Cantidad: {numerosUnicos.Count}");
 
 // Convertir de vuelta a lista si es necesario
 List<int> listaSinDuplicados = new List<int>(numerosUnicos);
-Console.WriteLine($"\nDe vuelta a lista: [{string. Join(", ", listaSinDuplicados)}]");
+Console.WriteLine($"\nDe vuelta a lista: [{string.Join(", ", listaSinDuplicados)}]");
 ```
 
 **Encontrar elementos comunes y diferentes:**
@@ -11874,7 +11874,7 @@ cola.Enqueue("Cuarto");
 Console.WriteLine($"Elementos en cola: {cola.Count}");
 
 // Peek: ver el primero sin quitar
-string primero = cola. Peek();
+string primero = cola.Peek();
 Console.WriteLine($"Primero en la cola (Peek): {primero}");
 Console.WriteLine($"Elementos después de Peek: {cola.Count}");
 
@@ -11883,7 +11883,7 @@ string procesado1 = cola.Dequeue();
 Console.WriteLine($"\nDequeue: {procesado1}");
 Console.WriteLine($"Elementos restantes: {cola.Count}");
 
-string procesado2 = cola. Dequeue();
+string procesado2 = cola.Dequeue();
 Console.WriteLine($"Dequeue: {procesado2}");
 Console.WriteLine($"Elementos restantes: {cola.Count}");
 
@@ -11931,7 +11931,7 @@ class SistemaTareas
     public void AgregarTarea(string descripcion)
     {
         Tarea tarea = new Tarea(siguienteId++, descripcion);
-        colaTareas. Enqueue(tarea);
+        colaTareas.Enqueue(tarea);
         Console.WriteLine($"✓ Tarea agregada:  {tarea}");
     }
     public void ProcesarSiguienteTarea()
@@ -11945,7 +11945,7 @@ class SistemaTareas
         Console.WriteLine($"▶ Procesando:  {tarea}");
         // Simular procesamiento
         System.Threading.Thread.Sleep(500);
-        Console.WriteLine($"✓ Tarea completada: {tarea. Id}");
+        Console.WriteLine($"✓ Tarea completada: {tarea.Id}");
     }
     public void MostrarTareasPendientes()
     {
@@ -12025,7 +12025,7 @@ colaAtencion.Enqueue(new Cliente("Juan López", siguienteTicket++));
 colaAtencion.Enqueue(new Cliente("María Martínez", siguienteTicket++));
 colaAtencion.Enqueue(new Cliente("Pedro Sánchez", siguienteTicket++));
 
-Console. WriteLine($"=== Clientes en espera:  {colaAtencion.Count} ===");
+Console.WriteLine($"=== Clientes en espera:  {colaAtencion.Count} ===");
 foreach (Cliente cliente in colaAtencion)
 {
     Console.WriteLine($"  {cliente}");
@@ -12036,7 +12036,7 @@ Console.WriteLine("\n=== Atendiendo Clientes ===");
 
 while (colaAtencion. Count > 0)
 {
-    Cliente siguiente = colaAtencion. Peek();
+    Cliente siguiente = colaAtencion.Peek();
     Console.WriteLine($"\nSiguiente:  {siguiente}");
     Console.Write("¿Atender? (s/n): ");
 
@@ -12044,8 +12044,8 @@ while (colaAtencion. Count > 0)
     Console.WriteLine("s");
 
     Cliente atendido = colaAtencion.Dequeue();
-    TimeSpan tiempoEspera = DateTime. Now - atendido.HoraLlegada;
-    Console.WriteLine($"✓ Atendido:  {atendido. Nombre}");
+    TimeSpan tiempoEspera = DateTime.Now - atendido.HoraLlegada;
+    Console.WriteLine($"✓ Atendido:  {atendido.Nombre}");
     Console.WriteLine($"  Tiempo de espera: {tiempoEspera.TotalSeconds:F1}s");
     Console.WriteLine($"  Clientes restantes: {colaAtencion.Count}");
 
@@ -12126,7 +12126,7 @@ class Navegador
     private string paginaActual = "Inicio";
     public void MostrarEstado()
     {
-        Console. WriteLine($"\nPágina actual: {paginaActual}");
+        Console.WriteLine($"\nPágina actual: {paginaActual}");
         Console.WriteLine($"  Puede ir atrás: {historialAtras.Count} páginas");
         Console.WriteLine($"  Puede ir adelante: {historialAdelante.Count} páginas");
     }
@@ -12145,8 +12145,8 @@ class Navegador
             return;
         }
         historialAdelante.Push(paginaActual);
-        paginaActual = historialAtras. Pop();
-        Console. WriteLine($"← Atrás a: {paginaActual}");
+        paginaActual = historialAtras.Pop();
+        Console.WriteLine($"← Atrás a: {paginaActual}");
     }
     public void Adelante()
     {
@@ -12209,7 +12209,7 @@ foreach (string expresion in expresiones)
 {
     bool balanceado = VerificarBalance(expresion);
     string resultado = balanceado ? "✓ Balanceado" :  "✗ No balanceado";
-    Console. WriteLine($"{expresion,-20} {resultado}");
+    Console.WriteLine($"{expresion,-20} {resultado}");
 }
 
 // Funciones locales
@@ -12227,7 +12227,7 @@ bool VerificarBalance(string expresion)
         // Si es cierre, verificar
         else if (c == ')' || c == ']' || c == '}')
         {
-            if (pila. Count == 0)
+            if (pila.Count == 0)
             {
                 return false; // Cierre sin apertura
             }
@@ -12371,14 +12371,14 @@ calificaciones["Biología"] = 90;
 Console.WriteLine("Calificaciones (ordenadas alfabéticamente por materia):");
 foreach (var par in calificaciones)
 {
-    Console.WriteLine($"  {par.Key}: {par. Value}");
+    Console.WriteLine($"  {par.Key}: {par.Value}");
 }
 
 // Keys y Values están ordenados
 Console.WriteLine("\nMaterias (ordenadas):");
 foreach (string materia in calificaciones.Keys)
 {
-    Console. WriteLine($"  - {materia}");
+    Console.WriteLine($"  - {materia}");
 }
 ```
 
@@ -12449,7 +12449,7 @@ void MostrarLista(LinkedList<string> lista)
     {
         Console.Write($"{item} -> ");
     }
-    Console. WriteLine("null");
+    Console.WriteLine("null");
 }
 ```
 
@@ -12457,7 +12457,7 @@ void MostrarLista(LinkedList<string> lista)
 
 ### 5.10. Colecciones No Genéricas (Legacy)
 
-Las colecciones no genéricas pertenecen al namespace `System.Collections` y fueron introducidas en las primeras versiones de . NET (antes de C# 2.0). **No son type-safe** y requieren casting, lo que puede causar errores en tiempo de ejecución.
+Las colecciones no genéricas pertenecen al namespace `System.Collections` y fueron introducidas en las primeras versiones de .NET (antes de C# 2.0). **No son type-safe** y requieren casting, lo que puede causar errores en tiempo de ejecución.
 
 #### 5.10.1. ¿Qué son y por qué evitarlas?
 
@@ -12535,7 +12535,7 @@ var sw1 = Stopwatch.StartNew();
 ArrayList arrayList = new ArrayList();
 for (int i = 0; i < ITERACIONES; i++)
 {
-    arrayList. Add(i); // Boxing
+    arrayList.Add(i); // Boxing
 }
 int suma1 = 0;
 foreach (int n in arrayList) // Unboxing
@@ -12582,7 +12582,7 @@ tabla["clave1"] = 100;
 tabla["clave2"] = "texto";
 tabla[123] = 3.14; // Claves y valores de cualquier tipo
 
-Console. WriteLine("Hashtable (sin type-safety):");
+Console.WriteLine("Hashtable (sin type-safety):");
 foreach (DictionaryEntry entrada in tabla)
 {
     Console.WriteLine($"  {entrada.Key} => {entrada.Value}");
@@ -12613,16 +12613,16 @@ using System.Collections;
 // Código ejecutable
 // ✗ EVITAR: colecciones no genéricas
 System.Collections.Stack pilaVieja = new System.Collections.Stack();
-pilaVieja. Push(1);
+pilaVieja.Push(1);
 pilaVieja.Push("texto");
 object valor1 = pilaVieja.Pop(); // Requiere casting
 
 System.Collections.Queue colaVieja = new System.Collections.Queue();
 colaVieja.Enqueue(1);
-colaVieja. Enqueue("texto");
+colaVieja.Enqueue("texto");
 object valor2 = colaVieja.Dequeue(); // Requiere casting
 
-Console. WriteLine("✓ ALTERNATIVAS CORRECTAS:");
+Console.WriteLine("✓ ALTERNATIVAS CORRECTAS:");
 
 // ✓ USAR:  versiones genéricas
 Stack<int> pilaNueva = new Stack<int>();
@@ -12631,9 +12631,9 @@ pilaNueva.Push(1);
 int valorPila = pilaNueva.Pop(); // Sin casting
 
 Queue<string> colaNueva = new Queue<string>();
-colaNueva. Enqueue("primero");
+colaNueva.Enqueue("primero");
 colaNueva.Enqueue("segundo");
-string valorCola = colaNueva. Dequeue(); // Sin casting
+string valorCola = colaNueva.Dequeue(); // Sin casting
 
 Console.WriteLine($"  Pila: {valorPila}");
 Console.WriteLine($"  Cola: {valorCola}");
@@ -12682,7 +12682,7 @@ IReadOnlyList<int> listaSoloLectura = listaMutable;
 Console.WriteLine("Lista de solo lectura:");
 foreach (int numero in listaSoloLectura)
 {
-    Console. Write($"{numero} ");
+    Console.Write($"{numero} ");
 }
 Console.WriteLine();
 
@@ -12693,7 +12693,7 @@ Console.WriteLine($"Primero: {primero}, Último: {ultimo}");
 
 // Modificación (NO permitido - no compila)
 // listaSoloLectura[0] = 10; // Error:  propiedad de solo lectura
-// listaSoloLectura. Add(6);  // Error: método no existe en interfaz
+// listaSoloLectura.Add(6);  // Error: método no existe en interfaz
 
 // IMPORTANTE: La lista subyacente SÍ puede cambiar
 Console.WriteLine("\nModificando lista original.. .");
@@ -12728,7 +12728,7 @@ Console.WriteLine($"Elemento [1]: {listaLectura[1]}"); // Tiene indexador
 #### 5.11.3. ReadOnlyCollection<T>
 
 ```csharp
-using System.Collections. ObjectModel;
+using System.Collections.ObjectModel;
 
 // Código ejecutable
 List<string> listaMutable = new List<string> { "uno", "dos", "tres" };
@@ -12785,7 +12785,7 @@ foreach (int n in numerosReadOnly)
 {
     Console.Write($"{n} ");
 }
-Console. WriteLine();
+Console.WriteLine();
 ```
 
 #### 5.11.5. Casos de Uso
@@ -12824,12 +12824,12 @@ foreach (string libro in libros)
 
 // No se puede modificar desde fuera
 // libros.Add("Otro libro"); // Error: método no existe
-// biblioteca. Libros.Add("Otro"); // Error: método no existe
+// biblioteca.Libros.Add("Otro"); // Error: método no existe
 
 // Solo se puede modificar a través de métodos públicos
 biblioteca.AgregarLibro("1984");
 
-Console. WriteLine("\nDespués de agregar:");
+Console.WriteLine("\nDespués de agregar:");
 foreach (string libro in biblioteca.Libros)
 {
     Console.WriteLine($"  - {libro}");
@@ -12896,7 +12896,7 @@ foreach (int n in lista1)
 {
     Console.Write($"{n} ");
 }
-Console. WriteLine();
+Console.WriteLine();
 
 // "Agregar" retorna NUEVA lista (no modifica la original)
 ImmutableList<int> lista2 = lista1.Add(4);
@@ -12925,7 +12925,7 @@ ImmutableList<int> lista3 = lista1
 Console.WriteLine("\nLista con operaciones encadenadas:");
 foreach (int n in lista3)
 {
-    Console. Write($"{n} ");
+    Console.Write($"{n} ");
 }
 Console.WriteLine();
 
@@ -13019,7 +13019,7 @@ using System.Collections.Immutable;
 ImmutableList<int> lista = ImmutableList.Create<int>();
 for (int i = 0; i < 1000; i++)
 {
-    lista = lista. Add(i); // Crea nueva instancia cada vez
+    lista = lista.Add(i); // Crea nueva instancia cada vez
 }
 
 // ✓ EFICIENTE: usar builder
@@ -13042,7 +13042,7 @@ using System.Collections.Immutable;
 class Editor
 {
     private ImmutableStack<string> historialAtras = ImmutableStack.Create<string>();
-    private ImmutableStack<string> historialAdelante = ImmutableStack. Create<string>();
+    private ImmutableStack<string> historialAdelante = ImmutableStack.Create<string>();
     private string textoActual = "";
     public void EscribirTexto(string nuevoTexto)
     {
@@ -13052,7 +13052,7 @@ class Editor
     }
     public void Deshacer()
     {
-        if (historialAtras. IsEmpty)
+        if (historialAtras.IsEmpty)
         {
             Console.WriteLine("No hay nada que deshacer");
             return;
@@ -13063,7 +13063,7 @@ class Editor
     }
     public void Rehacer()
     {
-        if (historialAdelante. IsEmpty)
+        if (historialAdelante.IsEmpty)
         {
             Console.WriteLine("No hay nada que rehacer");
             return;
@@ -13092,7 +13092,7 @@ editor.MostrarTexto();
 editor.EscribirTexto("Hola Mundo!");
 editor.MostrarTexto();
 
-editor. Deshacer();
+editor.Deshacer();
 editor.MostrarTexto();
 
 editor.Deshacer();
@@ -13125,7 +13125,7 @@ Las colecciones concurrentes están diseñadas específicamente para **escenario
 **Problema con colecciones normales en multi-hilo:**
 
 ```csharp
-using System.Threading. Tasks;
+using System.Threading.Tasks;
 
 // Código ejecutable
 List<int> lista = new List<int>();
@@ -13163,7 +13163,7 @@ Las colecciones concurrentes del namespace `System.Collections.Concurrent` está
 
 ```csharp
 using System.Collections.Concurrent;
-using System. Threading.Tasks;
+using System.Threading.Tasks;
 
 // Código ejecutable
 ConcurrentBag<int> bag = new ConcurrentBag<int>();
@@ -13310,7 +13310,7 @@ Console.WriteLine($"GetOrAdd: {valor2}");
 Console.WriteLine("\nDiccionario final:");
 foreach (var par in dict)
 {
-    Console.WriteLine($"  {par. Key} => {par.Value}");
+    Console.WriteLine($"  {par.Key} => {par.Value}");
 }
 ```
 
@@ -13348,9 +13348,9 @@ Parallel.ForEach(documentos, documento =>
 });
 
 Console.WriteLine("=== Frecuencia de Palabras ===");
-foreach (var par in frecuencias. OrderByDescending(p => p.Value))
+foreach (var par in frecuencias.OrderByDescending(p => p.Value))
 {
-    Console. WriteLine($"{par.Key}: {par.Value}");
+    Console.WriteLine($"{par.Key}: {par.Value}");
 }
 ```
 
@@ -13360,7 +13360,7 @@ foreach (var par in frecuencias. OrderByDescending(p => p.Value))
 
 ```csharp
 using System.Collections.Concurrent;
-using System.Threading. Tasks;
+using System.Threading.Tasks;
 
 // Código ejecutable
 BlockingCollection<int> coleccion = new BlockingCollection<int>(boundedCapacity: 10);
@@ -13525,7 +13525,7 @@ System.Collections (Legacy - Evitar)
 
 ### 5.15. Guía de Selección de Colecciones
 
-Para seleccionar el tipo de dato avanzado adecuado, no solo debemos mirar qué hace, sino cómo lo hace. Mientras que una `List<T>` es excelente para acceso directo por índice, es ineficiente para insertar elementos al inicio (ya que debe desplazar toda la información). Por el contrario, un `Dictionary<K, V>` ofrece búsquedas instantáneas pero consume más memoria. Elegir la colección correcta basándose en la complejidad de la operación es clave para el rendimiento del programa.
+Para seleccionar el tipo de dato avanzado adecuado, no solo debemos mirar qué hace, sino cómo lo hace.Mientras que una `List<T>` es excelente para acceso directo por índice, es ineficiente para insertar elementos al inicio (ya que debe desplazar toda la información). Por el contrario, un `Dictionary<K, V>` ofrece búsquedas instantáneas pero consume más memoria.Elegir la colección correcta basándose en la complejidad de la operación es clave para el rendimiento del programa.
 
 #### 5.15.1. Flujo de Decisión
 
@@ -13929,10 +13929,10 @@ using System.Globalization;
 
 // Código ejecutable
 // Cultura actual del sistema
-CultureInfo culturaActual = CultureInfo. CurrentCulture;
+CultureInfo culturaActual = CultureInfo.CurrentCulture;
 Console.WriteLine($"Cultura actual: {culturaActual.Name}");
-Console.WriteLine($"Nombre en inglés: {culturaActual. EnglishName}");
-Console.WriteLine($"Nombre nativo: {culturaActual. NativeName}");
+Console.WriteLine($"Nombre en inglés: {culturaActual.EnglishName}");
+Console.WriteLine($"Nombre nativo: {culturaActual.NativeName}");
 
 // Crear culturas específicas
 CultureInfo culturaEspañola = new CultureInfo("es-ES"); // España
@@ -13941,15 +13941,15 @@ CultureInfo culturaUSA = new CultureInfo("en-US"); // Estados Unidos
 CultureInfo culturaFrancia = new CultureInfo("fr-FR"); // Francia
 
 Console.WriteLine($"\nEspaña: {culturaEspañola.DisplayName}");
-Console.WriteLine($"México: {culturaMexicana. DisplayName}");
+Console.WriteLine($"México: {culturaMexicana.DisplayName}");
 Console.WriteLine($"USA: {culturaUSA.DisplayName}");
-Console.WriteLine($"Francia: {culturaFrancia. DisplayName}");
+Console.WriteLine($"Francia: {culturaFrancia.DisplayName}");
 ```
 
 ### 6.3. Formateo de Números
 
 ```csharp
-using System. Globalization;
+using System.Globalization;
 
 // Código ejecutable
 double numero = 1234567.89;
@@ -13960,7 +13960,7 @@ CultureInfo fr = new CultureInfo("fr-FR");
 
 Console.WriteLine("=== Formateo de Números ===");
 // N significa que es un Number, y el 2, el número de decimales
-Console.WriteLine($"España:   {numero. ToString("N2", es)}");
+Console.WriteLine($"España:   {numero.ToString("N2", es)}");
 Console.WriteLine($"USA:     {numero.ToString("N2", en)}");
 Console.WriteLine($"Francia:  {numero.ToString("N2", fr)}");
 
@@ -13991,7 +13991,7 @@ CultureInfo es = new CultureInfo("es-ES");
 CultureInfo en = new CultureInfo("en-US");
 CultureInfo ja = new CultureInfo("ja-JP");
 
-Console. WriteLine("=== Fecha Larga ===");
+Console.WriteLine("=== Fecha Larga ===");
 // D es fecha larga
 Console.WriteLine($"España: {fecha.ToString("D", es)}");
 Console.WriteLine($"USA:     {fecha.ToString("D", en)}");
@@ -14015,7 +14015,7 @@ public static class ExtensionesFormateo
 {
     public static string ToLocalDate(this DateTime fecha)
     {
-        return fecha. ToString("d", CultureInfo. CurrentCulture);
+        return fecha.ToString("d", CultureInfo.CurrentCulture);
     }
     public static string ToLocalMoney(this decimal cantidad)
     {
