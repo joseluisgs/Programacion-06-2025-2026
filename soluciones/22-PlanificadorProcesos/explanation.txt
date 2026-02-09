@@ -1,0 +1,41 @@
+
+// =============================================================================
+// EXPLICACIÓN DE LA TABLA COMPARATIVA DE TIEMPOS
+// =============================================================================
+//
+// ¿POR QUÉ LAS EJECUCIONES SON IDÉNTICAS?
+//   Todos los planificadores procesan los mismos 30 procesos generados por el
+//   factory, con los mismos tiempos iniciales. El quantum es idéntico (2).
+//   Por tanto, cada proceso recibe exactamente el mismo número de ejecuciones
+//   y termina en el mismo momento, independientemente del planificador usado.
+//
+// ¿POR QUÉ LOS TIEMPOS DE EJECUCIÓN SON DIFERENTES?
+//   Las diferencias se deben a la EFICIENCIA ALGORÍTMICA de cada estructura:
+//
+//   - O(1) operaciones: Cola, LinkedList, Dictionary → Más rápidos
+//   - O(log n) operaciones: SortedSet, PriorityQueue → Intermedios
+//   - O(n) operaciones: Lista, Dictionary con búsqueda secuencial → Más lentos
+//
+//   El "ganador" no es necesariamente el más rápido en ms (0ms vs 11ms),
+//   sino aquel que mejor equilibra:
+//     • Complejidad algorítmica
+//     • Uso de memoria
+//     • Simplicidad de código
+//     • Mantenibilidad
+//
+// OBSERVACIONES DE LOS RESULTADOS:
+//   • PlanificadorFifoCola y PlanificadorFifoLinkedList: O(1) para todas las
+//     operaciones. Ideales para FIFO puro.
+//   • PlanificadorPrioridadDictionaryCola: O(1) extracción con rango fijo de
+//     prioridades (1-9). Muy eficiente en la práctica.
+//   • PlanificadorPrioridadSortedSet: O(log n) elegante pero con overhead.
+//   • PlanificadorFifoDictionary: O(n) al buscar el primer elemento lo hace
+//     ineficiente para este caso de uso.
+//
+// CONCLUSIÓN PRÁCTICA:
+//   Para sistemas reales, elegir según el caso:
+//     - FIFO puro → Queue<T> (O(1), nativo, optimizado)
+//     - Prioridades fijas (1-9) → Dictionary<int, Queue<T>> (O(1) real)
+//     - Prioridades dinámicas → PriorityQueue<T> (O(log n), nativo)
+//     - Evitar Lista<OrderBy> en producción (O(n log n) acumulado)
+// =============================================================================
